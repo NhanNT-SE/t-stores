@@ -1,0 +1,22 @@
+version: "3.8"
+services:
+  node:
+    restart: always
+    depends_on: 
+      - mongo
+    ports: 
+      - 3000:3000
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    volumes:
+      - /app/node_modules
+      - ./:/app
+    links: 
+      - mongo
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - /var/data/db1:/data/db
