@@ -1,22 +1,26 @@
 version: "3.8"
 services:
+  mongo:
+    image: mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb:/data/db
+    logging:
+      driver: "none"
   node:
     restart: always
     depends_on: 
       - mongo
     ports: 
-      - 3000:3000
+      - "3000:3000"
     build:
       dockerfile: Dockerfile.dev
       context: .
     volumes:
       - /app/node_modules
       - ./:/app
-    links: 
-      - mongo
-  mongo:
-    image: mongo
-    ports:
-      - 27017:27017
-    volumes:
-      - /var/data/db1:/data/db
+    environment: 
+      - MONGO_URI=mongodb://mongo:27017/t-stores
+volumes:
+  mongodb:
