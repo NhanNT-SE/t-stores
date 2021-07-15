@@ -1,0 +1,58 @@
+apiVersion: skaffold/v2beta19
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - "./k8s/*"
+build:
+  local:
+    push: false
+  artifacts:
+    - image: nhannt1905/t-stores-auth
+      context: "./services/auth"
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "src/**/*.ts"
+    # - image: nhannt1905/tickets
+    #   context: "./services/tickets"
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - dest: .
+    #         src: "src/**/*.ts"
+    # - image: nhannt1905/orders
+    #   context: "./services/orders"
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - dest: .
+    #         src: "src/**/*.ts"
+    # - image: nhannt1905/expiration
+    #   context: "./services/expiration"
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - dest: .
+    #         src: "src/**/*.ts"
+    # - image: nhannt1905/payments
+    #   context: "./services/payments"
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - dest: .
+    #         src: "src/**/*.ts"
+    # - image: nhannt1905/client
+    #   context: "./client"
+    #   docker:
+    #     dockerfile: Dockerfile
+    #   sync:
+    #     manual:
+    #       - dest: .
+    #         src: "**/*.js"

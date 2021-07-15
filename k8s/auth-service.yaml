@@ -15,6 +15,7 @@ spec:
       containers:
         - name: t-stores-auth
           image: nhannt1905/t-stores-auth
+          imagePullPolicy: IfNotPresent
           env:
             - name: MONGO_URI
               value: "mongodb://auth-mongo-service:27017/t-stores"
