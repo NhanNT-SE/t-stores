@@ -3,9 +3,9 @@ import { app } from "./app";
 
 const PORT = 3000 || process.env.PORT;
 (async function () {
-  if (!process.env.MONGO_URI) {
-    throw new Error("MONGO_URI must be define");
-  }
+  // if (!process.env.MONGO_URI) {
+  //   throw new Error("MONGO_URI must be define");
+  // }
   const stringConnect = process.env.MONGO_URI || "mongodb://localhost/t-stores"
   try {
     await connect(stringConnect, {
