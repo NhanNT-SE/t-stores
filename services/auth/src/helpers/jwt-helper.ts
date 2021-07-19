@@ -1,14 +1,33 @@
 import jwt from "jsonwebtoken";
-import { ExpireTokenError } from "../errors/expire-token-error.js";
-import { UnauthorizedError } from "../errors/unauthorized-error.js";
+import { ExpireTokenError } from "../errors/expire-token-error";
+import { UnauthorizedError } from "../errors/unauthorized-error";
+
+const generateToken = async (
+  user: any,
+  secretSignature: string,
+  tokenLife: string
+) => {
+  try {
+    const userData = {
+      id: user.id,
+      role: user.role,
+    };
+    const token = await jwt.sign(userData, secretSignature, {
+      algorithm: "HS256",
+      expiresIn: tokenLife,
+    });
+    return token;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const verifyToken = async (token: string, secretKey: string) => {
   try {
     const verify = await jwt.verify(token, secretKey);
     return verify;
   } catch (error) {
-    const message = error.message;
-    if (message === "jwt expired") {
+    if (error.message === "jwt expired") {
       const overdueDays = getOverdueDays(error.expiredAt);
       throw new ExpireTokenError(overdueDays + "");
     }
@@ -22,4 +41,4 @@ const getOverdueDays = (dateExpired: Date) => {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
 };
-export { verifyToken };
+export { verifyToken, generateToken };
