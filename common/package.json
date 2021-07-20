@@ -1,13 +1,13 @@
 {
   "name": "@t-stores/common",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "clean": "del ./build/*",
     "build": "npm run clean && tsc",
     "git": "git add . && git commit -m \"Updates common module\" && git push",
-    "pub": "npm run git && npm version patch && npm run build && npm publish"
+    "pub": "npm run git && npm version patch && npm run build && npm publish --access=public"
   },
   "keywords": [],
   "author": "",
