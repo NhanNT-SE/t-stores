@@ -1,4 +1,4 @@
-import { validateRequest } from "./../middleware/validate-request";
+import { validateRequest } from "@tstores/common";
 import { Router } from "express";
 import { body } from "express-validator";
 import * as controller from "../controllers/auth-controller";

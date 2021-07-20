@@ -1,9 +1,13 @@
+import {
+  comparePassword,
+  CustomError,
+  generateToken,
+  verifyToken,
+  RoleAccount,
+} from "@tstores/common";
 import { NextFunction, Request, Response } from "express";
 import { CONFIG } from "../config";
-import { CustomError } from "../errors/custom-error";
-import { comparePassword } from "../helpers/hash-password";
-import { generateToken, verifyToken } from "../helpers/jwt-helper";
-import { EAccountRole, User } from "../models/user";
+import { User } from "../models/user";
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, email, password } = req.body;
@@ -11,7 +15,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
       username,
       email,
       password,
-      role: EAccountRole.User,
+      role: RoleAccount.User,
     });
     await user.save();
     res.send(user);

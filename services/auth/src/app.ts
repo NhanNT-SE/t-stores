@@ -4,12 +4,14 @@ import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import { body } from "express-validator";
 import helmet from "helmet";
-import { NotFoundError } from "./errors/not-found-error";
-import { errorHandle } from "./middleware/error-handle";
-import { requireAuth } from "./middleware/require-auth";
-import { validateRequest } from "./middleware/validate-request";
 import { AuthRouter } from "./routes/auth-router";
-import { requireAdmin } from "./middleware/require-admin";
+import {
+  errorHandle,
+  NotFoundError,
+  requireAdmin,
+  requireAuth,
+  validateRequest,
+} from "@tstores/common";
 
 const app = express();
 app.use(cors());
@@ -18,7 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", AuthRouter);
 app.use(requireAuth);
-app.use(requireAdmin);
+// app.use(requireAdmin);
 app.post(
   "/test",
   [

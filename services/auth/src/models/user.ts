@@ -1,22 +1,18 @@
+import { hashPassword, RoleAccount } from "@tstores/common";
 import { Document, Model, model, Schema } from "mongoose";
-import { hashPassword } from "../helpers/hash-password";
-export enum EAccountRole {
-  SupperAdmin = "Supper Admin",
-  Admin = "Admin",
-  User = "User",
-}
+
 interface IUser {
   email: string;
   username: string;
   password: string;
-  role?: EAccountRole;
+  role?: RoleAccount;
   isMFA?: boolean;
 }
 interface IUserDoc extends Document {
   email: string;
   username: string;
   password: string;
-  role?: EAccountRole;
+  role?: RoleAccount;
   isMFA?: boolean;
 }
 interface IUserModel extends Model<IUserDoc> {
@@ -51,8 +47,8 @@ const schema = new Schema(
     role:{
       type: String,
       required: true,
-      enum: Object.values(EAccountRole),
-      default: EAccountRole.User,
+      enum: Object.values(RoleAccount),
+      default: RoleAccount.User,
     }
   },
   {
