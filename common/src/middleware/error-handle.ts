@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import { Request } from "express";
-import { BaseError } from "../errors/base-error";
+import { BaseError } from "../errors";
 export const errorHandle = (
   err: any,
   req: Request,

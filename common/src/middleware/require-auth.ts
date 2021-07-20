@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { UnauthorizedError } from "../errors/unauthorized-error";
-import { verifyToken } from "../helpers/jwt-helper";
+import { UnauthorizedError } from "../errors";
+import { verifyToken } from "../helpers";
 
 interface ICurrentUser {
   id: string;

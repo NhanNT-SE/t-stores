@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ExpireTokenError } from "../errors/expire-token-error";
-import { UnauthorizedError } from "../errors/unauthorized-error";
+import { ExpireTokenError, UnauthorizedError } from "../errors";
 
 const generateToken = async (
   user: any,
