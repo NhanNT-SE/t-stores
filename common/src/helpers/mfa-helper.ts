@@ -1,10 +1,13 @@
 import qrcode from "qrcode";
-import {authenticator} from "otplib";
-const generateOTPToken = (username:string, serviceName:string, secret:string) => {
-  return authenticator.keyuri(username, serviceName, secret);
-};
-const generateQRCode = async (otpAuth:string) => {
+import { authenticator } from "otplib";
+
+const generateQRCode = async (
+  username: string,
+  serviceName: string,
+  secret: string
+) => {
   try {
+    const otpAuth = authenticator.keyuri(username, serviceName, secret);
     const qrCode = await qrcode.toDataURL(otpAuth);
     return qrCode;
   } catch (error) {
@@ -15,7 +18,7 @@ const generateQRCode = async (otpAuth:string) => {
 const generateSecretUser = () => {
   return authenticator.generateSecret();
 };
-const verifyOTPToken = (token:string, secret:string) => {
+const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
 };
-export { generateOTPToken, generateQRCode, generateSecretUser, verifyOTPToken };
+export { generateQRCode, generateSecretUser, verifyOTPToken };
