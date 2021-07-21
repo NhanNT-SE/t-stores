@@ -7,11 +7,16 @@ import helmet from "helmet";
 import { AuthRouter } from "./routes/auth-router";
 import {
   errorHandle,
+  generateQRCode,
+  generateSecretOTP,
+  InvalidOTPError,
   NotFoundError,
   requireAdmin,
   requireAuth,
   validateRequest,
+  verifyOTPToken,
 } from "@tstores/common";
+import { CONFIG } from "./config";
 
 const app = express();
 app.use(cors());
@@ -19,8 +24,28 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", AuthRouter);
+const secret = generateSecretOTP();
+app
+  .route("/api/mfa")
+  .get(async (req: Request, res: Response, next: NextFunction) => {
+    const qrCode = await generateQRCode("nhan-nt", CONFIG.SERVER_NAME, secret);
+    return res.send(qrCode);
+  })
+  .post(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { otp } = req.body;
+      const isValid = verifyOTPToken(otp, secret);
+      if (!isValid) {
+        throw new InvalidOTPError();
+      }
+     return res.send(isValid);
+    } catch (error) {
+      next(error);
+    }
+  });
+
 app.use(requireAuth);
-// app.use(requireAdmin);
+app.use(requireAdmin);
 app.post(
   "/test",
   [
@@ -36,9 +61,10 @@ app.post(
     }
   }
 );
-app.all("*", async (req, res, next) => {
+
+
+app.use((req, res, next) => {
   next(new NotFoundError());
 });
-
 app.use(errorHandle);
 export { app };

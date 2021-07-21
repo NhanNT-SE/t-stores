@@ -3,6 +3,7 @@ const CONFIG = {
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET!,
   ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE!,
   REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE!,
+  SERVER_NAME: process.env.SERVER_NAME!,
 };
 
 export { CONFIG };
