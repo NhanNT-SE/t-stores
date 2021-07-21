@@ -1,19 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "../errors";
 import { verifyToken } from "../helpers";
-
-interface ICurrentUser {
-  id: string;
-  role: string;
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      currentUser?: ICurrentUser;
-    }
-  }
-}
+import { ICurrentUser } from "../interfaces/current-user";
 const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const bearerHeader = req.headers["authorization"];
