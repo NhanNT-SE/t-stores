@@ -15,10 +15,10 @@ const generateQRCode = async (
   }
 };
 
-const generateSecretUser = () => {
+const generateSecretOTP = () => {
   return authenticator.generateSecret();
 };
 const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
 };
-export { generateQRCode, generateSecretUser, verifyOTPToken };
+export { generateQRCode, generateSecretOTP, verifyOTPToken };
