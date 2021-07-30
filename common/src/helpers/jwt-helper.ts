@@ -11,8 +11,7 @@ const generateToken = async (
       id: user.id,
       role: user.role,
     };
-    const token = await jwt.sign(userData, secretSignature, {
-      algorithm: "HS256",
+    const token = jwt.sign(userData, secretSignature, {
       expiresIn: tokenLife,
     });
     return token;
@@ -21,9 +20,9 @@ const generateToken = async (
   }
 };
 
-const verifyToken = async (token: string, secretKey: string) => {
+const verifyToken = (token: string, secretKey: string) => {
   try {
-    const verify = await jwt.verify(token, secretKey);
+    const verify = jwt.verify(token, secretKey);
     return verify;
   } catch (error) {
     if (error.message === "jwt expired") {
