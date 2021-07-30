@@ -18,6 +18,8 @@ export const currentUser = (
       process.env.ACCESS_TOKEN_SECRET!
     ) as ICurrentUser;
     req.currentUser = { id: decoded.id, role: decoded.role };
-  } catch (err) {}
-  next();
+    return next();
+  } catch (error) {
+    next(error);
+  }
 };
