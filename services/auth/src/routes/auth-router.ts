@@ -15,5 +15,6 @@ router.post(
   controller.signIn
 );
 router.post("/sign-up", controller.signUp);
+router.post("/sign-out", controller.signOut);
 router.post("/refresh-token", controller.refreshToken);
 export { router as AuthRouter };

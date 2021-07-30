@@ -4,10 +4,20 @@ import {
   generateToken,
   verifyToken,
   RoleAccount,
+  UnauthorizedError,
 } from "@tstores/common";
 import { NextFunction, Request, Response } from "express";
 import { CONFIG } from "../config";
 import { User } from "../models/user";
+
+const signOut = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.clearCookie("t-stores", { path: "/api/auth/refresh-token" });
+    res.json({ data: null, message: "user logout" });
+  } catch (error) {
+    next(error);
+  }
+};
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, email, password } = req.body;
@@ -34,7 +44,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
     if (!isValidPass) {
       throw new CustomError("Invalid username or password");
     }
-    const token = await generateToken(
+    const accessToken = await generateToken(
       { id: user.id, role: user.role },
       CONFIG.ACCESS_TOKEN_SECRET,
       CONFIG.ACCESS_TOKEN_LIFE
@@ -44,9 +54,12 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
       CONFIG.REFRESH_TOKEN_SECRET,
       CONFIG.REFRESH_TOKEN_LIFE
     );
-    res.send({
-      accessToken: `Bearer ${token}`,
-      refreshToken: refreshToken,
+    res.cookie("t-stores", refreshToken, {
+      httpOnly: true,
+      path: "/api/auth/refresh-token",
+    });
+    res.json({
+      accessToken,
     });
   } catch (error) {
     next(error);
@@ -58,7 +71,10 @@ const refreshToken = async (
   next: NextFunction
 ) => {
   try {
-    const { refreshToken, userId } = req.body;
+    const refreshToken = req.cookies[CONFIG.SERVER_NAME];
+    if (!refreshToken) {
+      throw new UnauthorizedError();
+    }
     const decoded = (await verifyToken(
       refreshToken,
       CONFIG.REFRESH_TOKEN_SECRET!
@@ -69,9 +85,9 @@ const refreshToken = async (
       CONFIG.ACCESS_TOKEN_SECRET,
       CONFIG.ACCESS_TOKEN_LIFE
     );
-    res.send({ accessToken: `Bearer ${accessToken}` });
+    res.json({ accessToken });
   } catch (error) {
-    next(error);
+    next(new UnauthorizedError());
   }
 };
-export { signIn, signUp, refreshToken };
+export { signIn, signOut, signUp, refreshToken };
