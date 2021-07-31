@@ -1,18 +1,14 @@
 import jwt from "jsonwebtoken";
 import { ExpireTokenError, UnauthorizedError } from "../errors";
+import { ICurrentUser } from "../interfaces";
 
 const generateToken = async (
-  user: any,
+  user: ICurrentUser,
   secretSignature: string,
   tokenLife: string
 ) => {
   try {
-    const userData = {
-      id: user.id,
-      role: user.role,
-      tokenVersion: user.tokenVersion,
-    };
-    const token = jwt.sign(userData, secretSignature, {
+    const token = jwt.sign(user, secretSignature, {
       expiresIn: tokenLife,
     });
     return token;
