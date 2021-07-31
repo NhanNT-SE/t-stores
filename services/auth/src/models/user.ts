@@ -7,12 +7,14 @@ interface IUser {
   password: string;
   role?: RoleAccount;
   isMFA?: boolean;
+  tokenVersion:number
 }
 interface IUserDoc extends Document {
   email: string;
   username: string;
   password: string;
   role?: RoleAccount;
+  tokenVersion:number
   isMFA?: boolean;
 }
 interface IUserModel extends Model<IUserDoc> {
@@ -49,6 +51,11 @@ const schema = new Schema(
       required: true,
       enum: Object.values(RoleAccount),
       default: RoleAccount.User,
+    },
+    tokenVersion:{
+      type: Number,
+      required: true,
+      default: 0,
     }
   },
   {
