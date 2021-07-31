@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { ExpireTokenError, UnauthorizedError } from "../errors";
 import { ICurrentUser } from "../interfaces";
 
-const generateToken = async (
+const generateToken = (
   user: ICurrentUser,
   secretSignature: string,
   tokenLife: string
