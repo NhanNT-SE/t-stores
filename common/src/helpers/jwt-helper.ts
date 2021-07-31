@@ -10,6 +10,7 @@ const generateToken = async (
     const userData = {
       id: user.id,
       role: user.role,
+      tokenVersion: user.tokenVersion,
     };
     const token = jwt.sign(userData, secretSignature, {
       expiresIn: tokenLife,
