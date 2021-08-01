@@ -11,6 +11,8 @@ import {
 } from "@tstores/common";
 import { CONFIG } from "../config";
 import { User } from "../models/user";
+import { redisClient } from "../redis_client";
+import { promisify } from "util";
 const signIn = async (username: string, password: string) => {
   const user = await User.findOne({ username });
   if (!user) {
@@ -36,7 +38,9 @@ const signIn = async (username: string, password: string) => {
     CONFIG.REFRESH_TOKEN_SECRET,
     CONFIG.REFRESH_TOKEN_LIFE
   );
-  const response: IResponse = { data: accessToken };
+  const resultSet = await redisClient.setAsync("test", "123", 5);
+  const resultGet = await redisClient.getAsync("test");
+  const response: IResponse = { data: { accessToken, resultSet, resultGet } };
   return { refreshToken, response };
 };
 

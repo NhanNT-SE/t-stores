@@ -30,6 +30,8 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
     res.cookie("t-stores", refreshToken, {
       httpOnly: true,
       path: "/api/auth/refresh-token",
+      secure: process.env.NODE_ENV !== "test",
+      sameSite: "strict",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
     res.json(response);
