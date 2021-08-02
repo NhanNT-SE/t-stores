@@ -45,7 +45,7 @@ class RedisHelper {
           if (reply) {
             resolve(reply);
           } else {
-            resolve(null);
+            reject("Token not exists");
           }
         }
       });
