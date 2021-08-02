@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { verifyToken } from "../helpers";
+import { JwtHelper, redisHelper } from "../helpers";
 import { ICurrentUser } from "../interfaces/current-user";
 
-export const currentUser = (
+export const currentUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -13,10 +13,14 @@ export const currentUser = (
       return next();
     }
     const TOKEN_FROM_CLIENT = bearerHeader.split(" ")[1];
-    const decoded = verifyToken(
+    const decoded = JwtHelper.verifyToken(
       TOKEN_FROM_CLIENT,
       process.env.ACCESS_TOKEN_SECRET!
     ) as ICurrentUser;
+    const redisValue = await redisHelper.getAsync(decoded.id);
+    if (!redisValue) {
+      return next();
+    }
     req.currentUser = decoded;
     return next();
   } catch (error) {
