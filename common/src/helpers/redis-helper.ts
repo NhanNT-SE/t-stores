@@ -41,8 +41,10 @@ class RedisHelper {
       console.log(this.client)
       this.client.get(key, (err, reply) => {
         if (err) {
+          console.log(err)
           reject(err);
         } else if (reply) {
+          console.log(reply)
           resolve(reply);
         }
       });
