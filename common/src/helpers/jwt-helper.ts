@@ -24,7 +24,7 @@ const verifyToken = (token: string, secretKey: string) => {
   } catch (error) {
     if (error.message === "jwt expired") {
       const overdueDays = getOverdueDays(error.expiredAt);
-      if (overdueDays > 3) {
+      if (overdueDays > 24) {
         throw new UnauthorizedError();
       }
       throw new ExpireTokenError(overdueDays + "");
@@ -36,8 +36,9 @@ const verifyToken = (token: string, secretKey: string) => {
 const getOverdueDays = (dateExpired: Date) => {
   const date = new Date();
   const diffTime = Math.abs(<any>date - <any>dateExpired);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
+  // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const diffHours = Math.ceil(diffTime / (1000 * 60 * 60 ));
+  return diffHours;
 };
 export const JwtHelper = {
   generateToken,
