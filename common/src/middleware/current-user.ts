@@ -8,17 +8,20 @@ export const currentUser = async (
   next: NextFunction
 ) => {
   try {
-    const bearerHeader = req.headers["authorization"];
-    if (!bearerHeader) {
+    if (!process.env.COOKIE_ACCESS_TOKEN) {
       return next();
     }
-    const TOKEN_FROM_CLIENT = bearerHeader.split(" ")[1];
+    const accessToken = req.cookies[process.env.COOKIE_ACCESS_TOKEN];
+
+    if (!accessToken) {
+      return next();
+    }
     const decoded = JwtHelper.verifyToken(
-      TOKEN_FROM_CLIENT,
+      accessToken,
       process.env.ACCESS_TOKEN_SECRET!
     ) as ICurrentUser;
     const tokenRedis = await redisHelper.getAsync(decoded.id);
-    if (!tokenRedis || tokenRedis !== TOKEN_FROM_CLIENT) {
+    if (!tokenRedis || tokenRedis !== accessToken) {
       return next();
     }
     req.currentUser = decoded;
