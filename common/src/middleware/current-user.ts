@@ -17,9 +17,8 @@ export const currentUser = async (
       TOKEN_FROM_CLIENT,
       process.env.ACCESS_TOKEN_SECRET!
     ) as ICurrentUser;
-    console.log("before get redis value");
-    const resuls = await redisHelper.getAsync("123456");
-    console.log("result", resuls);
+    const resuls = await redisHelper.getAsync("test");
+    console.log("result", resuls  );
     req.currentUser = decoded;
     return next();
   } catch (error) {

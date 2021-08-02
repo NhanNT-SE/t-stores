@@ -39,11 +39,14 @@ class RedisHelper {
   getAsync(key: string) {
     return new Promise((resolve, reject) => {
       this.client.get(key, (err, reply) => {
-        if (reply) {
-          resolve(reply);
-        }
-        if(!reply || err){
-          reject(null);
+        if (err) {
+          reject(err);
+        } else {
+          if (reply) {
+            resolve(reply);
+          } else {
+            resolve(null);
+          }
         }
       });
     });
