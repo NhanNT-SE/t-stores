@@ -3,7 +3,7 @@ import { Router } from "express";
 import { body } from "express-validator";
 import * as controller from "../controllers/mfa-controller";
 const router = Router();
-router.get("/", requireAuth, controller.getQRCode);
+router.get("/qr-code", requireAuth, controller.getQRCode);
 router.post(
   "/verify",
   [

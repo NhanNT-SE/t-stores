@@ -1,4 +1,4 @@
-import { OTPHelper, UnauthorizedError } from "@tstores/common";
+import { InvalidOTPError, OTPHelper, UnauthorizedError } from "@tstores/common";
 import { NextFunction, Request, Response } from "express";
 import { CONFIG } from "../config";
 import {
@@ -58,7 +58,7 @@ const refreshToken = async (
 };
 const verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { username } = req.body;
+    const { username, otp } = req.body;
     const user = await User.findOne({ username });
     if (!user) {
       throw new UnauthorizedError();
@@ -67,9 +67,13 @@ const verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
       user.secretMFA,
       CONFIG.OTP_SECRET
     );
-    res.json({ secretMFA });
+    const isValidOTP = OTPHelper.verifyOTPToken(otp, secretMFA);
+    if (!isValidOTP) {
+      throw new InvalidOTPError();
+    }
+    res.json({ secretMFA, isValidOTP });
   } catch (error) {
-    next(error);
+    next(new InvalidOTPError());
   }
 };
 export { signIn, signOut, signUp, refreshToken, verifyOTP };

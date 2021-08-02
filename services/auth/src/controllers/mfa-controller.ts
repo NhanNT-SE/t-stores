@@ -2,6 +2,7 @@ import {
   generateQRCode,
   InvalidOTPError,
   IResponse,
+  OTPHelper,
   PasswordHelper,
   UnauthorizedError,
   verifyOTPToken,
@@ -16,11 +17,14 @@ const getQRCode = async (req: Request, res: Response, next: NextFunction) => {
     if (!user) {
       throw new UnauthorizedError();
     }
-    // const verifySecret = await PasswordHelper.comparePassword()
+    const secretMFA = OTPHelper.decryptSecretOTP(
+      user.secretMFA,
+      CONFIG.OTP_SECRET
+    );
     const qrCode = await generateQRCode(
       user.username,
       CONFIG.SERVER_NAME,
-      "secret"
+      secretMFA
     );
     const response: IResponse = { data: { qrCode } };
     res.json(response);

@@ -34,6 +34,9 @@ router.post(
     body("username")
       .isLength({ min: 5 })
       .withMessage("must be at least 5 chars long"),
+    body("otp")
+      .isLength({ min: 6,max:6 })
+      .withMessage("otp code must be at 6 chars long"),
   ],
   validateRequest,
   controller.verifyOTP
