@@ -24,7 +24,7 @@ const verifyToken = (token: string, secretKey: string) => {
   } catch (error) {
     if (error.message === "jwt expired") {
       const overdueDays = getOverdueDays(error.expiredAt);
-      if (overdueDays > 12) {
+      if (overdueDays > 24) {
         throw new UnauthorizedError();
       }
       throw new ExpireTokenError(overdueDays + "");
