@@ -1,7 +1,6 @@
 import qrcode from "qrcode";
 import { authenticator } from "otplib";
 import { ISecretEncrypt } from "../interfaces";
-import { InvalidOTPError } from "../errors";
 const crypto = require("crypto");
 const algorithm = "aes-256-ctr";
 const iv = crypto.randomBytes(16);
@@ -34,27 +33,22 @@ const encryptSecretOTP = (secretKey: string): ISecretEncrypt => {
   };
 };
 const decryptSecretOTP = (hash: any, secretKey: string) => {
-  try {
-    const key_in_bytes = crypto
-      .createHash("sha256")
-      .update(String(secretKey))
-      .digest("base64")
-      .substr(0, 32);
-    const decipher = crypto.createDecipheriv(
-      algorithm,
-      key_in_bytes,
-      Buffer.from(hash.iv, "hex")
-    );
+  const key_in_bytes = crypto
+    .createHash("sha256")
+    .update(String(secretKey))
+    .digest("base64")
+    .substr(0, 32);
+  const decipher = crypto.createDecipheriv(
+    algorithm,
+    key_in_bytes,
+    Buffer.from(hash.iv, "hex")
+  );
 
-    const decrpyted = Buffer.concat([
-      decipher.update(Buffer.from(hash.content, "hex")),
-      decipher.final(),
-    ]);
-    return decrpyted.toString();
-  } catch (error) {
-    console.log("loi roi ne")
-    throw new InvalidOTPError();
-  }
+  const decrpyted = Buffer.concat([
+    decipher.update(Buffer.from(hash.content, "hex")),
+    decipher.final(),
+  ]);
+  return decrpyted.toString();
 };
 const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
