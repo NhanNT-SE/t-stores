@@ -20,7 +20,7 @@ export const currentUser = async (
     console.log("before get redis value");
     await redisHelper.connect("127.0.0.1",6379);
     redisHelper.client.get("123456", (err, reply) => {
-      console.log("promise get")
+      console.log("promise get",reply)
       if (err) {
         console.log(err);
       }
