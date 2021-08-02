@@ -22,3 +22,8 @@ const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
 };
 export { generateQRCode, generateSecretOTP, verifyOTPToken };
+export const OTPHelper = {
+  generateQRCode,
+  generateSecretOTP,
+  verifyOTPToken
+}

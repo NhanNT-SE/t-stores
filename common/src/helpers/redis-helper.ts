@@ -1,6 +1,5 @@
 import { RedisClient } from "redis";
-
-const redisDel = (client: RedisClient, key: string) => {
+const delAsync = (client: RedisClient, key: string) => {
   return new Promise((resolve, reject) => {
     client.del(key, (err, numKey) => {
       if (err) {
@@ -15,7 +14,7 @@ const redisDel = (client: RedisClient, key: string) => {
     });
   });
 };
-const redisGet = (client: RedisClient, key: string) => {
+const getAsync = (client: RedisClient, key: string) => {
   return new Promise((resolve, reject) => {
     client.get(key, (err, reply) => {
       if (err) {
@@ -26,7 +25,7 @@ const redisGet = (client: RedisClient, key: string) => {
     });
   });
 };
-const redisSet = (
+const setAsync = (
   client: RedisClient,
   key: string,
   value: string,
@@ -42,4 +41,8 @@ const redisSet = (
     });
   });
 };
-export { redisDel, redisGet, redisSet };
+export const RedisHelper = {
+  delAsync,
+  getAsync,
+  setAsync,
+};

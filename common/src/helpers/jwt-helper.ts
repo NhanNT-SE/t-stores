@@ -39,4 +39,7 @@ const getOverdueDays = (dateExpired: Date) => {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
 };
-export { verifyToken, generateToken };
+export const JwtHelper = {
+  generateToken,
+  verifyToken,
+};

@@ -10,4 +10,7 @@ const comparePassword = async (providedPass: string, storedPass: string) => {
   return isValid;
 };
 
-export { hashPassword, comparePassword };
+export const PasswordHelper = {
+  comparePassword,
+  hashPassword,
+};
