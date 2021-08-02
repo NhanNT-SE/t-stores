@@ -38,6 +38,7 @@ class RedisHelper {
   }
   getAsync(key: string) {
     return new Promise((resolve, reject) => {
+      console.log(this.client)
       this.client.get(key, (err, reply) => {
         if (err) {
           reject(err);
