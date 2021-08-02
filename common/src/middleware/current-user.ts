@@ -21,6 +21,7 @@ export const currentUser = async (
     if (!tokenRedis) {
       return next();
     }
+    console.log(tokenRedis)
     req.currentUser = decoded;
     return next();
   } catch (error) {
