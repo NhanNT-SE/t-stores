@@ -42,7 +42,9 @@ class RedisHelper {
         if (reply) {
           resolve(reply);
         }
-        reject(err);
+        if(!reply || err){
+          reject(null);
+        }
       });
     });
   }
