@@ -4,6 +4,12 @@ const CONFIG = {
   ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE!,
   REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE!,
   SERVER_NAME: process.env.SERVER_NAME!,
+  COOKIE_ACCESS_TOKEN: process.env.COOKIE_ACCESS_TOKEN!,
+  COOKIE_REFRESH_TOKEN: process.env.COOKIE_REFRESH_TOKEN!,
+  REDIS_TOKEN_LIFE: Number(process.env.REDIS_TOKEN_LIFE!),
+  REDIS_HOST: process.env.REDIS_HOST!,
+  REDIS_PORT: Number(process.env.REDIS_PORT!),
+  OTP_SECRET: process.env.OTP_SECRET!,
 };
 
 export { CONFIG };

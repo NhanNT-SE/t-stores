@@ -2,15 +2,23 @@ import {
   generateQRCode,
   InvalidOTPError,
   IResponse,
+  PasswordHelper,
+  UnauthorizedError,
   verifyOTPToken,
 } from "@tstores/common";
 import { Request, Response, NextFunction } from "express";
 import { CONFIG } from "../config";
+import { User } from "../models/user";
 
 const getQRCode = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const user = await User.findById(req.currentUser!.id);
+    if (!user) {
+      throw new UnauthorizedError();
+    }
+    // const verifySecret = await PasswordHelper.comparePassword()
     const qrCode = await generateQRCode(
-      "nhan-nt",
+      user.username,
       CONFIG.SERVER_NAME,
       "secret"
     );

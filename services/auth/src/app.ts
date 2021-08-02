@@ -16,11 +16,12 @@ import { MFARouter } from "./routes/mfa-router";
 
 const app = express();
 app.use(cors({}));
+app.use(cookieParser());
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(currentUser);
-app.use("/api/auth/refresh-token", cookieParser());
+// app.use("/api/auth/refresh-token", cookieParser());
 app.use("/api/auth", AuthRouter);
 app.use("/api/mfa", MFARouter);
 // const secret = generateSecretOTP();

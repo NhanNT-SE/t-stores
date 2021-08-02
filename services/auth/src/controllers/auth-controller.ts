@@ -1,11 +1,18 @@
-import { IResponse, UnauthorizedError } from "@tstores/common";
+import { OTPHelper, UnauthorizedError } from "@tstores/common";
 import { NextFunction, Request, Response } from "express";
-import { userService } from "../services/user-service";
+import { CONFIG } from "../config";
+import {
+  clearCookie,
+  sendAccessToken,
+  sendRefreshToken,
+} from "../helper/cookie-helper";
+import { User } from "../models/user";
+import { authService } from "../services/auth-service";
 
 const signOut = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const response: IResponse = { data: null, message: "user logout" };
-    res.clearCookie("t-stores", { path: "/api/auth/refresh-token" });
+    clearCookie(res);
+    const { response } = await authService.signOut(req);
     res.json(response);
   } catch (error) {
     next(error);
@@ -14,7 +21,7 @@ const signOut = async (req: Request, res: Response, next: NextFunction) => {
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, email, password } = req.body;
-    const { response } = await userService.signUp(username, email, password);
+    const { response } = await authService.signUp(username, email, password);
     res.json(response);
   } catch (error) {
     next(error);
@@ -23,17 +30,14 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password } = req.body;
-    const { refreshToken, response } = await userService.signIn(
-      username,
-      password
-    );
-    res.cookie("t-stores", refreshToken, {
-      httpOnly: true,
-      path: "/api/auth/refresh-token",
-      secure: process.env.NODE_ENV !== "test",
-      sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
+    const { refreshToken, accessToken, response, requiredMFA } =
+      await authService.signIn(username, password);
+    if (requiredMFA === false) {
+      sendAccessToken(res, accessToken);
+      sendRefreshToken(res, refreshToken);
+    } else {
+      clearCookie(res);
+    }
     res.json(response);
   } catch (error) {
     next(error);
@@ -45,10 +49,27 @@ const refreshToken = async (
   next: NextFunction
 ) => {
   try {
-    const { response } = await userService.refreshToken(req);
+    const { response, accessToken } = await authService.refreshToken(req);
+    sendAccessToken(res, accessToken);
     res.json(response);
   } catch (error) {
     next(new UnauthorizedError());
   }
 };
-export { signIn, signOut, signUp, refreshToken };
+const verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new UnauthorizedError();
+    }
+    const secretMFA = OTPHelper.decryptSecretOTP(
+      user.secretMFA,
+      CONFIG.OTP_SECRET
+    );
+    res.json({ secretMFA });
+  } catch (error) {
+    next(error);
+  }
+};
+export { signIn, signOut, signUp, refreshToken, verifyOTP };

@@ -1,4 +1,4 @@
-import { hashPassword, RoleAccount } from "@tstores/common";
+import { ISecretEncrypt, PasswordHelper, RoleAccount } from "@tstores/common";
 import { Document, Model, model, Schema } from "mongoose";
 
 interface IUser {
@@ -7,7 +7,9 @@ interface IUser {
   password: string;
   role?: RoleAccount;
   isMFA?: boolean;
-  tokenVersion:number
+  tokenVersion:number,
+  secretMFA: ISecretEncrypt
+
 }
 interface IUserDoc extends Document {
   email: string;
@@ -16,6 +18,7 @@ interface IUserDoc extends Document {
   role?: RoleAccount;
   tokenVersion:number
   isMFA?: boolean;
+  secretMFA:ISecretEncrypt
 }
 interface IUserModel extends Model<IUserDoc> {
   build(user: IUser): IUserDoc;
@@ -46,6 +49,10 @@ const schema = new Schema(
       type: Boolean,
       default: false,
     },
+    secretMFA: {
+      type: Object,
+      required: true,
+    },
     role:{
       type: String,
       required: true,
@@ -62,17 +69,20 @@ const schema = new Schema(
     collection: "users",
     toJSON: {
       transform(doc, ret) {
-        ret.id = ret._id;
-        delete ret.password;
         delete ret._id;
         delete ret.__v;
+        delete ret.password;
+        delete ret.tokenVersion;
+        delete ret.secretMFA;
+        delete ret.isMFA;
+        delete ret.role;
       },
     },
   }
 );
 schema.pre("save", async function (done) {
   if (this.isModified("password")) {
-    const passHashed = await hashPassword(this.get("password"));
+    const passHashed = await PasswordHelper.hashPassword(this.get("password"));
     this.set("password", passHashed);
   }
   done();

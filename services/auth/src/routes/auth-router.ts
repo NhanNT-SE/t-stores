@@ -1,4 +1,4 @@
-import { validateRequest } from "@tstores/common";
+import { requireAuth, validateRequest } from "@tstores/common";
 import { Router } from "express";
 import { body } from "express-validator";
 import * as controller from "../controllers/auth-controller";
@@ -26,6 +26,16 @@ router.post(
   validateRequest,
   controller.signUp
 );
-router.post("/sign-out", controller.signOut);
+router.post("/sign-out", requireAuth, controller.signOut);
 router.post("/refresh-token", controller.refreshToken);
+router.post(
+  "/verify-otp",
+  [
+    body("username")
+      .isLength({ min: 5 })
+      .withMessage("must be at least 5 chars long"),
+  ],
+  validateRequest,
+  controller.verifyOTP
+);
 export { router as AuthRouter };
