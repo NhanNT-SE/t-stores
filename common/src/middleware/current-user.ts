@@ -19,6 +19,7 @@ export const currentUser = async (
     ) as ICurrentUser;
     console.log("before get redis value");
     redisHelper.client.get("123456", (err, reply) => {
+      console.log("promise get")
       if (err) {
         console.log(err);
       }
