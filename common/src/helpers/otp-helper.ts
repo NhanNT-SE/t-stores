@@ -34,26 +34,27 @@ const encryptSecretOTP = (secretKey: string): ISecretEncrypt => {
   };
 };
 const decryptSecretOTP = (hash: any, secretKey: string) => {
- try {
-  const key_in_bytes = crypto
-  .createHash("sha256")
-  .update(String(secretKey))
-  .digest("base64")
-  .substr(0, 32);
-const decipher = crypto.createDecipheriv(
-  algorithm,
-  key_in_bytes,
-  Buffer.from(hash.iv, "hex")
-);
+  try {
+    const key_in_bytes = crypto
+      .createHash("sha256")
+      .update(String(secretKey))
+      .digest("base64")
+      .substr(0, 32);
+    const decipher = crypto.createDecipheriv(
+      algorithm,
+      key_in_bytes,
+      Buffer.from(hash.iv, "hex")
+    );
 
-const decrpyted = Buffer.concat([
-  decipher.update(Buffer.from(hash.content, "hex")),
-  decipher.final(),
-]);
-return decrpyted.toString();
- } catch (error) {
-   throw new InvalidOTPError()
- }
+    const decrpyted = Buffer.concat([
+      decipher.update(Buffer.from(hash.content, "hex")),
+      decipher.final(),
+    ]);
+    return decrpyted.toString();
+  } catch (error) {
+    console.log("loi roi ne")
+    throw new InvalidOTPError();
+  }
 };
 const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
