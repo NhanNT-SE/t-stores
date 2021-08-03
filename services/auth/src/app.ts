@@ -23,43 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(currentUser);
 // app.use("/api/auth/refresh-token", cookieParser());
 app.use("/api/auth", AuthRouter);
-app.use("/api/mfa", MFARouter);
-// const secret = generateSecretOTP();
-// app
-//   .route("/api/mfa")
-//   .get(async (req: Request, res: Response, next: NextFunction) => {
-//     const qrCode = await generateQRCode("nhan-nt", CONFIG.SERVER_NAME, secret);
-//     return res.send(qrCode);
-//   })
-//   .post(async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const { otp } = req.body;
-//       const isValid = verifyOTPToken(otp, secret);
-//       if (!isValid) {
-//         throw new InvalidOTPError();
-//       }
-//       return res.send(isValid);
-//     } catch (error) {
-//       next(error);
-//     }
-//   });
-
-app.post(
-  "/test",
-  [
-    body("username").isLength({ min: 5 }),
-    body("password").trim().notEmpty().withMessage("Password can not be empty"),
-  ],
-  validateRequest,
-  requireAuth,
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      res.send(req.currentUser);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+app.use("/api/auth/mfa", MFARouter);
 
 app.use((req, res, next) => {
   next(new NotFoundError());

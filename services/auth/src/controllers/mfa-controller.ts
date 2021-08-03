@@ -1,32 +1,11 @@
-import {
-  generateQRCode,
-  InvalidOTPError,
-  IResponse,
-  OTPHelper,
-  PasswordHelper,
-  UnauthorizedError,
-  verifyOTPToken,
-} from "@tstores/common";
-import { Request, Response, NextFunction } from "express";
-import { CONFIG } from "../config";
-import { User } from "../models/user";
+import { InvalidOTPError } from "@tstores/common";
+import { NextFunction, Request, Response } from "express";
+import { mfaService } from "./../services/mfa-service";
 
 const getQRCode = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const user = await User.findById(req.currentUser!.id);
-    if (!user) {
-      throw new UnauthorizedError();
-    }
-    const secretMFA = OTPHelper.decryptSecretOTP(
-      user.secretMFA,
-      CONFIG.OTP_SECRET
-    );
-    const qrCode = await generateQRCode(
-      user.username,
-      CONFIG.SERVER_NAME,
-      secretMFA
-    );
-    const response: IResponse = { data: { qrCode } };
+    const { password } = req.body;
+    const { response } = await mfaService.getQRCode(req.currentUser!, password);
     res.json(response);
   } catch (error) {
     next(error);
@@ -35,15 +14,31 @@ const getQRCode = async (req: Request, res: Response, next: NextFunction) => {
 const verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { otp } = req.body;
-    const isValid = verifyOTPToken(otp, "secret");
-    if (!isValid) {
-      throw new InvalidOTPError();
-    }
-    const response: IResponse = { data: { isValid } };
-    return res.json(response);
+    const { response } = await mfaService.verifyOTP(req.currentUser!, otp);
+    res.json(response);
+  } catch (error) {
+    next(new InvalidOTPError());
+  }
+};
+const enableMFA = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { otp } = req.body;
+    const { response } = await mfaService.enableMFA(req.currentUser!, otp);
+    res.json(response);
   } catch (error) {
     next(error);
   }
 };
-
-export { getQRCode, verifyOTP };
+const disableMFA = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { password } = req.body;
+    const { response } = await mfaService.disableMFA(
+      req.currentUser!,
+      password
+    );
+    res.json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+export { disableMFA, enableMFA, getQRCode, verifyOTP };

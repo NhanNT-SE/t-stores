@@ -3,6 +3,7 @@ import { Router } from "express";
 import { body } from "express-validator";
 import * as controller from "../controllers/auth-controller";
 const router = Router();
+router.get("/check-auth", requireAuth, controller.checkAuth);
 router.post(
   "/sign-in",
   [
@@ -35,7 +36,7 @@ router.post(
       .isLength({ min: 5 })
       .withMessage("must be at least 5 chars long"),
     body("otp")
-      .isLength({ min: 6,max:6 })
+      .isLength({ min: 6, max: 6 })
       .withMessage("otp code must be at 6 chars long"),
   ],
   validateRequest,

@@ -7,18 +7,17 @@ interface IUser {
   password: string;
   role?: RoleAccount;
   isMFA?: boolean;
-  tokenVersion:number,
-  secretMFA: ISecretEncrypt
-
+  secretMFA: ISecretEncrypt;
+  tokenVersion: number;
 }
 interface IUserDoc extends Document {
   email: string;
   username: string;
   password: string;
   role?: RoleAccount;
-  tokenVersion:number
   isMFA?: boolean;
-  secretMFA:ISecretEncrypt
+  secretMFA: ISecretEncrypt;
+  tokenVersion: number;
 }
 interface IUserModel extends Model<IUserDoc> {
   build(user: IUser): IUserDoc;
@@ -53,17 +52,17 @@ const schema = new Schema(
       type: Object,
       required: true,
     },
-    role:{
+    role: {
       type: String,
       required: true,
       enum: Object.values(RoleAccount),
       default: RoleAccount.User,
     },
-    tokenVersion:{
+    tokenVersion: {
       type: Number,
       required: true,
       default: 0,
-    }
+    },
   },
   {
     collection: "users",
@@ -73,6 +72,7 @@ const schema = new Schema(
         delete ret.__v;
         delete ret.password;
         delete ret.tokenVersion;
+        delete ret.otpVersion;
         delete ret.secretMFA;
         delete ret.isMFA;
         delete ret.role;

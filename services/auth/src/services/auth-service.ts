@@ -1,6 +1,7 @@
 import {
   CustomError,
   ICurrentUser,
+  InvalidOTPError,
   IResponse,
   JwtHelper,
   OTPHelper,
@@ -9,9 +10,42 @@ import {
   RoleAccount,
   UnauthorizedError,
 } from "@tstores/common";
-import { Request } from "express";
 import { CONFIG } from "../config";
+import { getAccessToken, getRefreshToken } from "../helper/token-helper";
 import { User } from "../models/user";
+
+const checkAuth = async (currentUser: ICurrentUser) => {
+  const user = await User.findById(currentUser.id);
+  if (!user) {
+    throw new UnauthorizedError();
+  }
+  const response: IResponse = { data: user };
+  return { response };
+};
+
+const refreshToken = async (refreshToken: string) => {
+  if (!refreshToken) {
+    throw new UnauthorizedError();
+  }
+  const decoded = JwtHelper.verifyToken(
+    refreshToken,
+    CONFIG.REFRESH_TOKEN_SECRET!
+  ) as ICurrentUser;
+  const user = await User.findById(decoded.id);
+  if (!user) {
+    throw new UnauthorizedError();
+  }
+  if (+user.tokenVersion !== +decoded.tokenVersion!) {
+    throw new UnauthorizedError();
+  }
+  const accessToken = getAccessToken(user);
+  await redisHelper.setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
+  const response: IResponse = {
+    data: { isSuccess: true },
+    message: "Token refresh successfully",
+  };
+  return { response, accessToken };
+};
 const signIn = async (username: string, password: string) => {
   const user = await User.findOne({ username });
   if (!user) {
@@ -24,37 +58,30 @@ const signIn = async (username: string, password: string) => {
   if (!isValidPass) {
     throw new CustomError("Invalid username or password");
   }
-  const jwtPayload = {
-    id: user.id,
-    role: user.role,
-    tokenVersion: user.tokenVersion,
-  } as ICurrentUser;
-
-  const accessToken = JwtHelper.generateToken(
-    jwtPayload,
-    CONFIG.ACCESS_TOKEN_SECRET,
-    CONFIG.ACCESS_TOKEN_LIFE
-  );
-  const refreshToken = JwtHelper.generateToken(
-    jwtPayload,
-    CONFIG.REFRESH_TOKEN_SECRET,
-    CONFIG.REFRESH_TOKEN_LIFE
-  );
-  await redisHelper.setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
+  const accessToken = getAccessToken(user);
+  const refreshToken = getRefreshToken(user);
   const requiredMFA = user.isMFA;
+  if (!requiredMFA) {
+    await redisHelper.setAsync(
+      user.id,
+      accessToken,
+      CONFIG.REDIS_TOKEN_LIFE * 2
+    );
+  }
   const response: IResponse = {
     data: { isSuccess: !user.isMFA, requiredMFA: user.isMFA },
     message: !user.isMFA ? "Sign in successfully" : "Required MFA",
   };
-  return { refreshToken, accessToken, response, requiredMFA };
+
+  return { response, accessToken, refreshToken, requiredMFA };
 };
-const signOut = async (req: Request) => {
-  await User.findByIdAndUpdate(req.currentUser!.id, {
+const signOut = async (currentUser: ICurrentUser) => {
+  await User.findByIdAndUpdate(currentUser.id, {
     $inc: { tokenVersion: 1 },
   });
-  await redisHelper.delAsync(req.currentUser!.id);
+  await redisHelper.delAsync(currentUser.id);
   const response: IResponse = {
-    data: null,
+    data: { isSuccess: true },
     message: "Sign out successfully",
   };
   return { response };
@@ -66,50 +93,40 @@ const signUp = async (username: string, email: string, password: string) => {
     email,
     password,
     role: RoleAccount.User,
-    tokenVersion: 0,
     secretMFA,
+    tokenVersion: 0,
   }).save();
   const response: IResponse = { data: user };
   return { response };
 };
-const refreshToken = async (req: Request) => {
-  const refreshToken = req.cookies[CONFIG.COOKIE_REFRESH_TOKEN];
-  if (!refreshToken) {
-    throw new UnauthorizedError();
-  }
-  const decoded = JwtHelper.verifyToken(
-    refreshToken,
-    CONFIG.REFRESH_TOKEN_SECRET!
-  ) as ICurrentUser;
-  const user = await User.findById(decoded.id);
+
+const verifyOTP = async (username: string, otp: string) => {
+  const user = await User.findOne({ username });
   if (!user) {
     throw new UnauthorizedError();
   }
-  if (+user.tokenVersion !== +decoded.tokenVersion) {
-    throw new UnauthorizedError();
-  }
-  const accessToken = JwtHelper.generateToken(
-    {
-      id: decoded.id,
-      role: decoded.role,
-      tokenVersion: decoded.tokenVersion,
-    },
-    CONFIG.ACCESS_TOKEN_SECRET,
-    CONFIG.ACCESS_TOKEN_LIFE
+  const secretMFA = OTPHelper.decryptSecretOTP(
+    user.secretMFA,
+    CONFIG.OTP_SECRET
   );
+  const isValidOTP = OTPHelper.verifyOTPToken(otp, secretMFA);
+  if (!isValidOTP) {
+    throw new InvalidOTPError();
+  }
+  const accessToken = getAccessToken(user);
+  const refreshToken = getRefreshToken(user);
   await redisHelper.setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
   const response: IResponse = {
-    data: null,
-    message: "Token refresh successfully",
+    data: { isSuccess: true },
+    message: "Sign in successfully",
   };
-  return { response, accessToken };
+  return { accessToken, refreshToken, response };
 };
-const verifyOTP = async (username: string, email: string, password: string) => {
-  
-}
 export const authService = {
+  checkAuth,
   signIn,
   signUp,
   signOut,
   refreshToken,
+  verifyOTP,
 };
