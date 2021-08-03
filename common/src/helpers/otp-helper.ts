@@ -4,10 +4,7 @@ import { ISecretEncrypt } from "../interfaces";
 const crypto = require("crypto");
 const algorithm = "aes-256-ctr";
 const iv = crypto.randomBytes(16);
-interface IDecryptSecret {
-  secretMFA: string;
-  otpVersion: number;
-}
+
 const generateQRCode = async (
   username: string,
   serviceName: string,
@@ -42,7 +39,7 @@ const encryptSecretOTP = (
     content: encrypted.toString("hex"),
   };
 };
-const decryptSecretOTP = (hash: any, secretKey: string): IDecryptSecret => {
+const decryptSecretOTP = (hash: any, secretKey: string) => {
   const key_in_bytes = crypto
     .createHash("sha256")
     .update(String(secretKey))
@@ -58,8 +55,7 @@ const decryptSecretOTP = (hash: any, secretKey: string): IDecryptSecret => {
     decipher.update(Buffer.from(hash.content, "hex")),
     decipher.final(),
   ]);
-  const decryptedJson = JSON.parse(decrpyted.toString());
-  return decryptedJson;
+  return decrpyted.toString();
 };
 const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
