@@ -53,7 +53,6 @@ const decryptSecretOTP = (hash: any, secretKey: string) => {
 const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
 };
-export { generateQRCode, encryptSecretOTP, verifyOTPToken };
 export const OTPHelper = {
   generateQRCode,
   encryptSecretOTP,
