@@ -18,8 +18,14 @@ const generateQRCode = async (
   }
 };
 
-const encryptSecretOTP = (secretKey: string): ISecretEncrypt => {
-  const secretOTP = authenticator.generateSecret();
+const encryptSecretOTP = (
+  secretKey: string,
+  otpVersion: number
+): ISecretEncrypt => {
+  const secretOTP = JSON.stringify({
+    secretMFA: authenticator.generateSecret(),
+    otpVersion,
+  });
   const key_in_bytes = crypto
     .createHash("sha256")
     .update(String(secretKey))
