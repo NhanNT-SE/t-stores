@@ -54,7 +54,7 @@ const decryptSecretOTP = (hash: any, secretKey: string) => {
     decipher.update(Buffer.from(hash.content, "hex")),
     decipher.final(),
   ]);
-  return decrpyted.toString();
+  return decrpyted;
 };
 const verifyOTPToken = (token: string, secret: string) => {
   return authenticator.verify({ token, secret });
