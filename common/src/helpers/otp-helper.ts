@@ -4,7 +4,6 @@ import { ISecretEncrypt } from "../interfaces";
 const crypto = require("crypto");
 const algorithm = "aes-256-ctr";
 const iv = crypto.randomBytes(16);
-
 const generateQRCode = async (
   username: string,
   serviceName: string,
@@ -19,14 +18,8 @@ const generateQRCode = async (
   }
 };
 
-const encryptSecretOTP = (
-  secretKey: string,
-  otpVersion: number
-): ISecretEncrypt => {
-  const secretOTP = JSON.stringify({
-    secretMFA: authenticator.generateSecret(),
-    otpVersion,
-  });
+const encryptSecretOTP = (secretKey: string): ISecretEncrypt => {
+  const secretOTP = authenticator.generateSecret();
   const key_in_bytes = crypto
     .createHash("sha256")
     .update(String(secretKey))
