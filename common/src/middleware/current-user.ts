@@ -1,0 +1,32 @@
+import { NextFunction, Request, Response } from "express";
+import { JwtHelper, redisHelper } from "../helpers";
+import { ICurrentUser } from "../interfaces/current-user";
+
+export const currentUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!process.env.COOKIE_ACCESS_TOKEN) {
+      return next();
+    }
+    const accessToken = req.cookies[process.env.COOKIE_ACCESS_TOKEN];
+
+    if (!accessToken) {
+      return next();
+    }
+    const decoded = JwtHelper.verifyToken(
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET!
+    ) as ICurrentUser;
+    const tokenRedis = await redisHelper.getAsync(decoded.id);
+    if (!tokenRedis || tokenRedis !== accessToken) {
+      return next();
+    }
+    req.currentUser = decoded;
+    return next();
+  } catch (error) {
+    next(error);
+  }
+};
