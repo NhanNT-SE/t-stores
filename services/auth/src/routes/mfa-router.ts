@@ -3,7 +3,7 @@ import { Router } from "express";
 import { body } from "express-validator";
 import * as controller from "../controllers/mfa-controller";
 const router = Router();
-router.get(
+router.post(
   "/qr-code",
   [body("password").trim().notEmpty().withMessage("Password can not be empty")],
   validateRequest,

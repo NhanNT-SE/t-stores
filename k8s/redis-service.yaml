@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: t-stores-redis
+  template:
+    metadata:
+      labels:
+        app: t-stores-redis
+    spec:
+      volumes:
+        - name: redis-storage
+          persistentVolumeClaim:
+            claimName: redis-volume-claim
+      containers:
+        - name: t-stores-redis
+          image: redis
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: t-stores-redis
+  ports:
+    - name: redis-expose
+      protocol: TCP
+      port: 6379
+      targetPort: 6379

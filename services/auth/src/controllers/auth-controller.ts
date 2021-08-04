@@ -8,10 +8,6 @@ import {
 } from "../helper/cookie-helper";
 import { authService } from "../services/auth-service";
 
-const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
-  const { response } = await authService.checkAuth(req.currentUser!);
-  res.json(response);
-};
 const refreshToken = async (
   req: Request,
   res: Response,
@@ -79,4 +75,4 @@ const verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
     next(new InvalidOTPError());
   }
 };
-export { checkAuth, signIn, signOut, signUp, refreshToken, verifyOTP };
+export { signIn, signOut, signUp, refreshToken, verifyOTP };
