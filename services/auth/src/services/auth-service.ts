@@ -14,14 +14,6 @@ import { CONFIG } from "../config";
 import { getAccessToken, getRefreshToken } from "../helper/token-helper";
 import { User } from "../models/user";
 
-const checkAuth = async (currentUser: ICurrentUser) => {
-  const user = await User.findById(currentUser.id);
-  if (!user) {
-    throw new UnauthorizedError();
-  }
-  const response: IResponse = { data: user };
-  return { response };
-};
 
 const refreshToken = async (refreshToken: string) => {
   if (!refreshToken) {
@@ -123,7 +115,6 @@ const verifyOTP = async (username: string, otp: string) => {
   return { accessToken, refreshToken, response };
 };
 export const authService = {
-  checkAuth,
   signIn,
   signUp,
   signOut,

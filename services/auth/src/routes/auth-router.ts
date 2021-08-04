@@ -3,7 +3,6 @@ import { Router } from "express";
 import { body } from "express-validator";
 import * as controller from "../controllers/auth-controller";
 const router = Router();
-router.get("/check-auth", requireAuth, controller.checkAuth);
 router.post(
   "/sign-in",
   [
