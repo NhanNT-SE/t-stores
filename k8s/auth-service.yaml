@@ -19,6 +19,30 @@ spec:
           env:
             - name: MONGO_URI
               value: "mongodb://auth-mongo-service:27017/t-stores"
+            - name: ACCESS_TOKEN_SECRET 
+              value: "t-stores-access-token-secret-afcv-bgdhw-7asd-6dghfkj"
+            - name: REFRESH_TOKEN_SECRET 
+              value: "t-stores-refresh-token-secret-asdv-d2sdwq-shw3b-ahvc"
+            - name: OTP_SECRET 
+              value: "t-stores-otp-secret-asdv-dsdwq-12sa-aswr-56hsn"
+            - name: ACCESS_TOKEN_LIFE 
+              value: "1d"
+            - name: REFRESH_TOKEN_LIFE 
+              value: "7d"
+            - name: REDIS_TOKEN_LIFE 
+              value: "86400"
+            - name: SERVER_NAME 
+              value: "t-stores"
+            - name: REDIS_HOST 
+              value: "redis-service"
+            - name: REDIS_PORT 
+              value: "6379"
+            - name: COOKIE_ACCESS_TOKEN 
+              value: "t-stores-access-token"
+            - name: COOKIE_REFRESH_TOKEN 
+              value: "t-stores-refresh-token"
+            - name: NODE_ENV 
+              value: "develop"
 ---
 apiVersion: v1
 kind: Service
