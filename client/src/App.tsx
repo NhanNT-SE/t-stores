@@ -1,57 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import NotFoundPage from "components/common/NotFound";
+import { PrivateRoute } from "components/common/PrivateRoute";
+import AdminLayout from "components/layouts/AdminLayout";
+import UserLayout from "components/layouts/UserLayout";
+import LoginPage from "features/auth/pages/Login";
+import RegisterPage from "features/auth/pages/Register";
+import React from "react";
+import { Route, Router, Switch } from "react-router-dom";
+import { rootHistory } from "utils";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <Router history={rootHistory}>
+      <Switch>
+        <PrivateRoute path="/" exact component={UserLayout} />
+        <PrivateRoute path="/admin" component={AdminLayout} />
+        <Route path="/login" exact component={LoginPage} />
+        <Route path="/register" exact component={RegisterPage} />
+
+        <Route component={NotFoundPage} />
+      </Switch>
+    </Router>
   );
 }
 
