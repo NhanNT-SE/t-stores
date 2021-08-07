@@ -7,19 +7,21 @@ import RegisterPage from "features/auth/pages/Register";
 import React from "react";
 import { Route, Router, Switch } from "react-router-dom";
 import { rootHistory } from "utils";
+import "./App.scss";
 
 function App() {
   return (
-    <Router history={rootHistory}>
-      <Switch>
-        <PrivateRoute path="/" exact component={UserLayout} />
-        <PrivateRoute path="/admin" component={AdminLayout} />
-        <Route path="/login" exact component={LoginPage} />
-        <Route path="/register" exact component={RegisterPage} />
-
-        <Route component={NotFoundPage} />
-      </Switch>
-    </Router>
+    <div className="app">
+      <Router history={rootHistory}>
+        <Switch>
+          <PrivateRoute path="/" exact component={UserLayout} />
+          <PrivateRoute path="/admin" component={AdminLayout} />
+          <Route path="/login" exact component={LoginPage} />
+          <Route path="/register" exact component={RegisterPage} />
+          <Route component={NotFoundPage} />
+        </Switch>
+      </Router>
+    </div>
   );
 }
 
