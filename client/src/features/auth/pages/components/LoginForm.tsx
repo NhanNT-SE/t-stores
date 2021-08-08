@@ -8,7 +8,7 @@ import {
 import { AccountBox, Lock } from "@material-ui/icons";
 import { InputField } from "components/form-fields";
 import { CheckBoxField } from "components/form-fields/CheckBoxField";
-import { LoginInput, LogoutInput } from "models/input-model";
+import { LoginInput } from "models/input-model";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -26,8 +26,8 @@ export default function LoginForm({ initialValue, onSubmit }: LoginFormProps) {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<LogoutInput>({
+    formState: { isSubmitting, isValid },
+  } = useForm<LoginInput>({
     defaultValues: initialValue,
     resolver: yupResolver(schema),
     mode: "onBlur",
@@ -36,7 +36,7 @@ export default function LoginForm({ initialValue, onSubmit }: LoginFormProps) {
     onSubmit(formValue);
   };
   return (
-    <Box>
+    <Box mt={3}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <InputField
           name="username"
@@ -79,7 +79,8 @@ export default function LoginForm({ initialValue, onSubmit }: LoginFormProps) {
             type="submit"
             variant="contained"
             color="primary"
-            disabled={isSubmitting}
+            size="large"
+            disabled={isSubmitting || !isValid}
           >
             {isSubmitting && <CircularProgress size={16} color="primary" />}
             &nbsp; Login

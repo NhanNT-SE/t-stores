@@ -14,10 +14,12 @@ const useStyles = makeStyles((theme) => ({
     height: "70%",
     gridTemplateRows: "1fr auto",
     gridTemplateColumns: "1fr 1fr",
-    gridTemplateAreas: '"image form" "register login"',
+    gridTemplateAreas: '"form image" "form login"',
   },
   form: {
     gridArea: "form",
+    display:"flex",
+    flexDirection:"column"
   },
   image: {
     gridArea: "image",
@@ -28,18 +30,13 @@ const useStyles = makeStyles((theme) => ({
       height: "100%",
     },
   },
-  register: {
-    gridArea: "register",
+  login: {
+    gridArea: "login",
     display: "flex",
     alignItems: "center",
-    justifyContent:"center",
-   
+    justifyContent: "center",
   },
-  login: {
-    display:"flex",
-    alignItems:'center',
-    gridArea: "login",
-  },
+
   button: {
     minWidth: "fit-content",
     padding: theme.spacing(1),
@@ -58,4 +55,4 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-export { useStyles as loginStyle };
+export { useStyles as registerStyle };
