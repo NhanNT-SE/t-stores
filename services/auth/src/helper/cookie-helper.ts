@@ -13,6 +13,7 @@ const sendRefreshToken = (res: Response, refreshToken: string) => {
   res.cookie(CONFIG.COOKIE_REFRESH_TOKEN, refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "develop",
+
     sameSite: "strict",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });

@@ -8,21 +8,25 @@ import {
 import { AccountBox, Lock } from "@material-ui/icons";
 import { InputField } from "components/form-fields";
 import { CheckBoxField } from "components/form-fields/CheckBoxField";
-import { LoginInput } from "models/input-model";
+import { LoginInput } from "models";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
 export interface LoginFormProps {
-  initialValue: LoginInput;
+ 
   onSubmit: (formValue: LoginInput) => void;
 }
 const schema = yup.object().shape({
   username: yup.string().required().min(6),
-  password: yup.string().required().min(8),
+  password: yup.string().required().min(6),
 });
-
-export default function LoginForm({ initialValue, onSubmit }: LoginFormProps) {
+const initialValue: LoginInput = {
+  username: "nhan-nt",
+  password: "123456",
+  isRemember: false,
+};
+export default function LoginForm({ onSubmit }: LoginFormProps) {
   const {
     control,
     handleSubmit,

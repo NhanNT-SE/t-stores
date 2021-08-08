@@ -2,7 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, InputAdornment, makeStyles } from "@material-ui/core";
 import { AccountBox, Email, Lock, LockOpen } from "@material-ui/icons";
 import { InputField } from "components/form-fields";
-import { RegisterInput } from "models/input-model";
+import { RegisterInput } from "models";
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -21,9 +21,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export interface RegisterFormProps {
-  initialValue: RegisterInput;
   onSubmit: (formValue: RegisterInput) => void;
 }
+const initialValue: RegisterInput = {
+  username: "",
+  password: "",
+  email: "",
+  passwordConfirm: "",
+};
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   username: yup.string().required().min(6),
@@ -40,10 +45,7 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("password"), null], "Password not match"),
 });
 
-export default function RegisterForm({
-  initialValue,
-  onSubmit,
-}: RegisterFormProps) {
+export default function RegisterForm({ onSubmit }: RegisterFormProps) {
   const classes = useStyles();
   const {
     control,

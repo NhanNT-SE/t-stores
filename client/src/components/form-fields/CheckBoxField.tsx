@@ -33,7 +33,7 @@ export function CheckBoxField({
         <Checkbox
           size={sizeInput ? sizeInput : "medium"}
           name={name}
-          value={value}
+          checked={value}
           color={color ? color : "primary"}
           onChange={onChange}
           onBlur={onBlur}

@@ -1,7 +1,7 @@
 export interface LoginInput {
   username: string;
   password: string;
-  isRemember: boolean;
+  isRemember?: boolean;
 }
 
 export interface RegisterInput {

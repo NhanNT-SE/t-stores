@@ -1,9 +1,11 @@
+import { BASE_URL_DEV } from 'config';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 const axiosClient = axios.create({
-  baseURL: 'https://js-post-api.herokuapp.com/api',
+  baseURL: BASE_URL_DEV,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials:true
 });
 axiosClient.interceptors.request.use(
   function (config: AxiosRequestConfig) {

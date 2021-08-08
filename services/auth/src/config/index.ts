@@ -10,6 +10,7 @@ const CONFIG = {
   REDIS_HOST: process.env.REDIS_HOST!,
   REDIS_PORT: Number(process.env.REDIS_PORT!),
   OTP_SECRET: process.env.OTP_SECRET!,
+  PORT: process.env.PORT!,
 };
 
 export { CONFIG };

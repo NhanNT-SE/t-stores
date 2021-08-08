@@ -3,7 +3,7 @@ import { connect } from "mongoose";
 import { app } from "./app";
 import { CONFIG } from "./config";
 
-const PORT = 3000 || process.env.PORT;
+const PORT = CONFIG.PORT;
 (async function () {
   // if (!process.env.MONGO_URI) {
   //   throw new Error("MONGO_URI must be define");
