@@ -7,6 +7,8 @@ deploy:
 build:
   local:
     push: false
+  tagPolicy:
+    sha256: {}
   artifacts:
     - image: nhannt1905/t-stores-auth
       context: "./services/auth"
