@@ -1,19 +1,25 @@
-import { Typography } from "@material-ui/core";
-import { Box } from "@material-ui/core";
-import { InputField } from "components/form-fields";
+import { Box, Typography } from "@material-ui/core";
+import { LoginInput } from "models/input-model";
 import React from "react";
 import LoginForm from "./components/LoginForm";
 import { loginStyle } from "./styles/login-style";
 
 export default function LoginPage() {
   const classes = loginStyle();
-
+  const initialValue: LoginInput = {
+    username: "",
+    password: "",
+    isRemember: false,
+  };
+  const onFormSubmit = (formValue: LoginInput) => {
+    console.log("form submit", formValue);
+  };
   return (
     <Box className={classes.root}>
       <Box borderRadius={8} boxShadow={2} className={classes.fromContainer}>
         <Box className={classes.form}>
           <Typography variant="h3">Login</Typography>
-          <LoginForm />
+          <LoginForm initialValue={initialValue} onSubmit={onFormSubmit} />
         </Box>
         <Box className={classes.image}>
           <img

@@ -1,36 +1,90 @@
-import { Box, InputAdornment } from "@material-ui/core";
-import { AccountCircle } from "@material-ui/icons";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  InputAdornment,
+} from "@material-ui/core";
+import { AccountBox, Lock } from "@material-ui/icons";
 import { InputField } from "components/form-fields";
+import { CheckBoxField } from "components/form-fields/CheckBoxField";
+import { LoginInput, LogoutInput } from "models/input-model";
 import React from "react";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
 
-export interface LoginFormProps {}
+export interface LoginFormProps {
+  initialValue: LoginInput;
+  onSubmit: (formValue: LoginInput) => void;
+}
+const schema = yup.object().shape({
+  username: yup.string().required().min(6),
+  password: yup.string().required().min(8),
+});
 
-export default function LoginForm(props: LoginFormProps) {
+export default function LoginForm({ initialValue, onSubmit }: LoginFormProps) {
   const {
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm({
-    // defaultValues: initialValue,
-    // resolver: yupResolver(schema),
+  } = useForm<LogoutInput>({
+    defaultValues: initialValue,
+    resolver: yupResolver(schema),
+    mode: "onBlur",
   });
+  const handleFormSubmit = (formValue: LoginInput) => {
+    onSubmit(formValue);
+  };
   return (
     <Box>
-      <form>
+      <form onSubmit={handleSubmit(handleFormSubmit)}>
         <InputField
           name="username"
+          sizeInput="medium"
           control={control}
           label="Username"
-          variant="standard"
-          advanced={{
+          placeholder="Enter your username"
+          optional={{
             startAdornment: (
               <InputAdornment position="start">
-                <AccountCircle color="primary" />
+                <AccountBox />
               </InputAdornment>
             ),
           }}
         />
+        <InputField
+          name="password"
+          sizeInput="medium"
+          control={control}
+          label="Password"
+          type="password"
+          placeholder="Enter your Password"
+          optional={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Lock />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Box mt={3}>
+          <CheckBoxField
+            control={control}
+            name="isRemember"
+            label="Remember me?"
+          />
+        </Box>
+        <Box mt={3}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting && <CircularProgress size={16} color="primary" />}
+            &nbsp; Login
+          </Button>
+        </Box>
       </form>
     </Box>
   );

@@ -1,12 +1,13 @@
-import { InputBaseProps, InputProps, TextField,  } from "@material-ui/core";
+import { InputBaseProps, TextField } from "@material-ui/core";
 import React, { InputHTMLAttributes } from "react";
 import { Control, useController } from "react-hook-form";
 export interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   control: Control<any>;
   label: string;
-  variant: "filled" | "outlined" | "standard";
-  advanced?:InputBaseProps
+  variant?: "filled" | "outlined" | "standard";
+  sizeInput?: "small" | "medium";
+  optional?: InputBaseProps;
 }
 
 export function InputField({
@@ -14,7 +15,8 @@ export function InputField({
   control,
   label,
   variant,
-  advanced,
+  sizeInput,
+  optional,
   ...inputProps
 }: InputFieldProps) {
   const {
@@ -27,9 +29,9 @@ export function InputField({
   return (
     <TextField
       fullWidth
-      size="small"
+      size={sizeInput ? sizeInput : "small"}
       margin="normal"
-      variant={variant}
+      variant={variant ? variant : "outlined"}
       label={label}
       value={value}
       onChange={onChange}
@@ -38,8 +40,8 @@ export function InputField({
       error={invalid}
       helperText={error?.message}
       inputProps={inputProps}
-      InputProps={advanced}
-      
+      InputProps={optional}
     />
+    
   );
 }

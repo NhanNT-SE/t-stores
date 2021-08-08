@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   fromContainer: {
+    overflow: "auto",
     display: "grid",
     backgroundColor: "#fff",
     padding: theme.spacing(2, 4),
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     height: "70%",
     gridTemplateRows: "1fr auto",
     gridTemplateColumns: "1fr 1fr",
-    gridTemplateAreas: '"image form" "login register"',
+    gridTemplateAreas: '"image form" "register login"',
   },
   form: {
     gridArea: "form",
