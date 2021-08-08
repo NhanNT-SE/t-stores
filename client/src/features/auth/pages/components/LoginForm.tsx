@@ -8,6 +8,7 @@ import {
 import { AccountBox, Lock } from "@material-ui/icons";
 import { InputField } from "components/form-fields";
 import { CheckBoxField } from "components/form-fields/CheckBoxField";
+import { BASE_URL } from "config";
 import { LoginInput } from "models";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -27,6 +28,7 @@ const initialValue: LoginInput = {
   isRemember: false,
 };
 export default function LoginForm({ onSubmit }: LoginFormProps) {
+  console.log("enviromet", BASE_URL)
   const {
     control,
     handleSubmit,

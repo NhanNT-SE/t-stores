@@ -1,7 +1,7 @@
-import { BASE_URL_DEV } from 'config';
+import { BASE_URL } from 'config';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 const axiosClient = axios.create({
-  baseURL: BASE_URL_DEV,
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
