@@ -1,7 +1,7 @@
-import { redisHelper } from "@tstores/common";
 import { connect } from "mongoose";
-import { app } from "./app";
-import { CONFIG } from "./config";
+import { app } from "./src/app";
+import { CONFIG } from "./src/config";
+import { redisHelper } from "./src/redis-helper";
 
 const PORT = CONFIG.PORT;
 (async function () {

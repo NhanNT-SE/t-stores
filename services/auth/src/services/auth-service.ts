@@ -6,13 +6,13 @@ import {
   JwtHelper,
   OTPHelper,
   PasswordHelper,
-  redisHelper,
   RoleAccount,
   UnauthorizedError,
 } from "@tstores/common";
 import { CONFIG } from "../config";
 import { getAccessToken, getRefreshToken } from "../helper/token-helper";
 import { User } from "../models/user";
+import { redisHelper } from "../redis-helper";
 
 
 const refreshToken = async (refreshToken: string) => {
