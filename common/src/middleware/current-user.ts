@@ -1,12 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import { JwtHelper, redisHelper } from "../helpers";
-import { ICurrentUser } from "../interfaces/current-user";
+import { NextFunction, Request, Response } from 'express';
+import { JwtHelper, RedisHelper } from '../helpers';
+import { ICurrentUser } from '../interfaces/current-user';
 
-export const currentUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const currentUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!process.env.COOKIE_ACCESS_TOKEN) {
       return next();
@@ -20,7 +16,10 @@ export const currentUser = async (
       accessToken,
       process.env.ACCESS_TOKEN_SECRET!
     ) as ICurrentUser;
-    const tokenRedis = await redisHelper.getAsync(decoded.id);
+    if (!req.redisClient) {
+      throw new Error('Cannot access redis client before connecting');
+    }
+    const tokenRedis = await new RedisHelper(req.redisClient).getAsync(decoded.id);
     if (!tokenRedis || tokenRedis !== accessToken) {
       return next();
     }
