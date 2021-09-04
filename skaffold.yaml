@@ -7,6 +7,8 @@ deploy:
 build:
   local:
     push: false
+  tagPolicy:
+    sha256: {}
   artifacts:
     - image: nhannt1905/t-stores-auth
       context: "./services/auth"
@@ -48,11 +50,11 @@ build:
     #     manual:
     #       - dest: .
     #         src: "src/**/*.ts"
-    # - image: nhannt1905/client
-    #   context: "./client"
-    #   docker:
-    #     dockerfile: Dockerfile
-    #   sync:
-    #     manual:
-    #       - dest: .
-    #         src: "**/*.js"
+    - image: nhannt1905/t-stores-client
+      context: "./client"
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "**/*.ts"

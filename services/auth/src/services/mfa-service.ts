@@ -1,6 +1,6 @@
 import {
   CustomError,
-  ICurrentUser,
+  CurrentUser,
   InvalidOTPError,
   IResponse,
   OTPHelper,
@@ -10,7 +10,7 @@ import {
 import { CONFIG } from "../config";
 import { User } from "../models/user";
 
-const getQRCode = async (currentUser: ICurrentUser, password: string) => {
+const getQRCode = async (currentUser: CurrentUser, password: string) => {
   const user = await User.findById(currentUser.id);
   if (!user) {
     throw new UnauthorizedError();
@@ -35,7 +35,7 @@ const getQRCode = async (currentUser: ICurrentUser, password: string) => {
   const response: IResponse = { data: { qrCode } };
   return { response };
 };
-const verifyOTP = async (currentUser: ICurrentUser, otp: string) => {
+const verifyOTP = async (currentUser: CurrentUser, otp: string) => {
   const user = await User.findById(currentUser.id);
   if (!user) {
     throw new UnauthorizedError();
@@ -56,7 +56,7 @@ const verifyOTP = async (currentUser: ICurrentUser, otp: string) => {
   return { response };
 };
 
-const enableMFA = async (currentUser: ICurrentUser, otp: string) => {
+const enableMFA = async (currentUser: CurrentUser, otp: string) => {
   const user = await User.findById(currentUser.id);
   if (!user) {
     throw new UnauthorizedError();
@@ -81,7 +81,7 @@ const enableMFA = async (currentUser: ICurrentUser, otp: string) => {
   };
   return { response };
 };
-const disableMFA = async (currentUser: ICurrentUser, password: string) => {
+const disableMFA = async (currentUser: CurrentUser, password: string) => {
   const user = await User.findById(currentUser.id);
   if (!user) {
     throw new UnauthorizedError();

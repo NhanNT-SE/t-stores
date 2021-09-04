@@ -1,6 +1,6 @@
-import { InvalidOTPError } from "@tstores/common";
-import { NextFunction, Request, Response } from "express";
-import { mfaService } from "./../services/mfa-service";
+import { InvalidOTPError } from '@tstores/common';
+import { NextFunction, Request, Response } from 'express';
+import { mfaService } from './../services/mfa-service';
 
 const getQRCode = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,10 +32,7 @@ const enableMFA = async (req: Request, res: Response, next: NextFunction) => {
 const disableMFA = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { password } = req.body;
-    const { response } = await mfaService.disableMFA(
-      req.currentUser!,
-      password
-    );
+    const { response } = await mfaService.disableMFA(req.currentUser!, password);
     res.json(response);
   } catch (error) {
     next(error);

@@ -28,7 +28,6 @@ const refreshToken = async (
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password } = req.body;
-
     const { response, requiredMFA, accessToken, refreshToken } =
       await authService.signIn(username, password);
     if (!requiredMFA) {

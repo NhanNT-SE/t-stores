@@ -1,6 +1,6 @@
 import qrcode from "qrcode";
 import { authenticator } from "otplib";
-import { ISecretEncrypt } from "../interfaces";
+import { SecretEncrypt } from "..";
 const crypto = require("crypto");
 const algorithm = "aes-256-ctr";
 const iv = crypto.randomBytes(16);
@@ -18,7 +18,7 @@ const generateQRCode = async (
   }
 };
 
-const encryptSecretOTP = (secretKey: string): ISecretEncrypt => {
+const encryptSecretOTP = (secretKey: string): SecretEncrypt => {
   const secretOTP = authenticator.generateSecret();
   const key_in_bytes = crypto
     .createHash("sha256")

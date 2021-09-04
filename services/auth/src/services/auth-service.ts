@@ -1,18 +1,19 @@
 import {
   CustomError,
-  ICurrentUser,
+  CurrentUser,
   InvalidOTPError,
   IResponse,
   JwtHelper,
   OTPHelper,
   PasswordHelper,
-  redisHelper,
   RoleAccount,
   UnauthorizedError,
+  RedisHelper
 } from "@tstores/common";
 import { CONFIG } from "../config";
 import { getAccessToken, getRefreshToken } from "../helper/token-helper";
 import { User } from "../models/user";
+import { redisClient } from "../redis-client";
 
 
 const refreshToken = async (refreshToken: string) => {
@@ -22,7 +23,7 @@ const refreshToken = async (refreshToken: string) => {
   const decoded = JwtHelper.verifyToken(
     refreshToken,
     CONFIG.REFRESH_TOKEN_SECRET!
-  ) as ICurrentUser;
+  ) as CurrentUser;
   const user = await User.findById(decoded.id);
   if (!user) {
     throw new UnauthorizedError();
@@ -31,7 +32,7 @@ const refreshToken = async (refreshToken: string) => {
     throw new UnauthorizedError();
   }
   const accessToken = getAccessToken(user);
-  await redisHelper.setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
+  await new RedisHelper(redisClient.client).setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
   const response: IResponse = {
     data: { isSuccess: true },
     message: "Token refresh successfully",
@@ -54,7 +55,7 @@ const signIn = async (username: string, password: string) => {
   const refreshToken = getRefreshToken(user);
   const requiredMFA = user.isMFA;
   if (!requiredMFA) {
-    await redisHelper.setAsync(
+    await new RedisHelper(redisClient.client).setAsync(
       user.id,
       accessToken,
       CONFIG.REDIS_TOKEN_LIFE * 2
@@ -67,11 +68,11 @@ const signIn = async (username: string, password: string) => {
 
   return { response, accessToken, refreshToken, requiredMFA };
 };
-const signOut = async (currentUser: ICurrentUser) => {
+const signOut = async (currentUser: CurrentUser) => {
   await User.findByIdAndUpdate(currentUser.id, {
     $inc: { tokenVersion: 1 },
   });
-  await redisHelper.delAsync(currentUser.id);
+  await new RedisHelper(redisClient.client).delAsync(currentUser.id);
   const response: IResponse = {
     data: { isSuccess: true },
     message: "Sign out successfully",
@@ -107,10 +108,11 @@ const verifyOTP = async (username: string, otp: string) => {
   }
   const accessToken = getAccessToken(user);
   const refreshToken = getRefreshToken(user);
-  await redisHelper.setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
+  await new RedisHelper(redisClient.client).setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
   const response: IResponse = {
     data: { isSuccess: true },
     message: "Sign in successfully",
+    
   };
   return { accessToken, refreshToken, response };
 };
