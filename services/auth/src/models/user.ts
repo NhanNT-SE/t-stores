@@ -1,4 +1,4 @@
-import { ISecretEncrypt, PasswordHelper, RoleAccount } from "@tstores/common";
+import { SecretEncrypt, PasswordHelper, RoleAccount } from "@tstores/common";
 import { Document, Model, model, Schema } from "mongoose";
 
 interface IUser {
@@ -7,7 +7,7 @@ interface IUser {
   password: string;
   role?: RoleAccount;
   isMFA?: boolean;
-  secretMFA: ISecretEncrypt;
+  secretMFA: SecretEncrypt;
   tokenVersion: number;
 }
 interface IUserDoc extends Document {
@@ -16,7 +16,7 @@ interface IUserDoc extends Document {
   password: string;
   role?: RoleAccount;
   isMFA?: boolean;
-  secretMFA: ISecretEncrypt;
+  secretMFA: SecretEncrypt;
   tokenVersion: number;
 }
 interface IUserModel extends Model<IUserDoc> {

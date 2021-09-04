@@ -1,10 +1,10 @@
-import { ICurrentUser, JwtHelper } from "@tstores/common";
+import { CurrentUser, JwtHelper } from "@tstores/common";
 import { CONFIG } from "../config";
 const getAccessToken = (user: any): string => {
   const jwtPayload = {
     id: user.id,
     role: user.role,
-  } as ICurrentUser;
+  } as CurrentUser;
   return JwtHelper.generateToken(
     jwtPayload,
     CONFIG.ACCESS_TOKEN_SECRET,
@@ -16,7 +16,7 @@ const getRefreshToken = (user: any): string => {
     id: user.id,
     role: user.role,
     tokenVersion: user.tokenVersion,
-  } as ICurrentUser;
+  } as CurrentUser;
   return JwtHelper.generateToken(
     jwtPayload,
     CONFIG.REFRESH_TOKEN_SECRET,

@@ -1,6 +1,6 @@
 import {
   CustomError,
-  ICurrentUser,
+  CurrentUser,
   InvalidOTPError,
   IResponse,
   JwtHelper,
@@ -23,7 +23,7 @@ const refreshToken = async (refreshToken: string) => {
   const decoded = JwtHelper.verifyToken(
     refreshToken,
     CONFIG.REFRESH_TOKEN_SECRET!
-  ) as ICurrentUser;
+  ) as CurrentUser;
   const user = await User.findById(decoded.id);
   if (!user) {
     throw new UnauthorizedError();
@@ -68,7 +68,7 @@ const signIn = async (username: string, password: string) => {
 
   return { response, accessToken, refreshToken, requiredMFA };
 };
-const signOut = async (currentUser: ICurrentUser) => {
+const signOut = async (currentUser: CurrentUser) => {
   await User.findByIdAndUpdate(currentUser.id, {
     $inc: { tokenVersion: 1 },
   });

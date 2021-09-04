@@ -15,7 +15,7 @@ function App() {
       <Router history={rootHistory}>
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
-            <PrivateRoute path="/" exact component={UserLayout} />
+            <Route path="/" exact component={UserLayout} />
             <PrivateRoute path="/admin" component={AdminLayout} />
             <Route path="/login" exact component={LoginPage} />
             <Route path="/register" exact component={RegisterPage} />
