@@ -1,15 +1,15 @@
 import { RedisClient } from 'redis';
-import { ICurrentUser } from './interfaces/current-user';
+import { CurrentUser } from './types';
 export * from './errors';
 export * from './helpers';
 export * from './middleware';
 export * from './types';
-export * from './interfaces';
+export * from './events';
 
 declare global {
   namespace Express {
     interface Request {
-      currentUser?: ICurrentUser;
+      currentUser?: CurrentUser;
       redisClient?: RedisClient;
     }
   }
