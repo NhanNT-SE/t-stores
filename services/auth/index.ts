@@ -1,7 +1,8 @@
 import { connect } from "mongoose";
 import { app } from "./src/app";
 import { CONFIG } from "./src/config";
-import { redisHelper } from "./src/redis-helper";
+import { redisClient } from "./src/redis-client";
+// import { redisHelper } from "./src/redis-helper";
 
 const PORT = CONFIG.PORT;
 (async function () {
@@ -10,7 +11,7 @@ const PORT = CONFIG.PORT;
   // }
   const stringConnect = process.env.MONGO_URI || "mongodb://localhost/t-stores";
   try {
-    await redisHelper.connect(CONFIG.REDIS_HOST, CONFIG.REDIS_PORT);
+    await redisClient.connect(CONFIG.REDIS_HOST, CONFIG.REDIS_PORT);
     await connect(stringConnect, {
       useUnifiedTopology: true,
       useNewUrlParser: true,

@@ -1,9 +1,12 @@
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  setupFilesAfterEnv: ["./jest.setup.ts"],
-
+  roots: ['<rootDir>/src'],
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  setupFilesAfterEnv: ['./src/jest.setup.ts'],
+  // transform: {
+  //   '^.+\\.tsx?$': 'ts-jest',
+  // },
   // coverageThreshold: {
   //   global: {
   //     branches: 80,
@@ -12,9 +15,9 @@ module.exports = {
   //     statements: 80,
   //   },
   // },
-  // coverageReporters: ["json", "lcov", "text", "clover"],
-  // moduleFileExtensions: ["ts", "js", "json", "node"],
+  coverageReporters: ["json", "lcov", "text", "clover"],
+  moduleFileExtensions: ["ts", "js", "json", "node"],
   // collectCoverage: true,
-  // clearMocks: true,
-  // coverageDirectory: "coverage",
+  clearMocks: true,
+  coverageDirectory: "coverage",
 };

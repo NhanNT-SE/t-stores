@@ -1,14 +1,15 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import mongoose from 'mongoose';
-import { app } from './src/app';
+import { app } from './app';
+import { CONFIG } from './config';
+import { redisClient } from './redis-client';
 
-jest.mock('./src/redis-helper.ts');
 let mongo: MongoMemoryServer;
 declare global {
   namespace NodeJS {
     interface Global {
-      signIn(): Promise<string>;
+      signIn(): Promise<string[]>;
     }
   }
 }
@@ -23,6 +24,7 @@ beforeAll(async () => {
     useCreateIndex: true,
     useFindAndModify: false,
   });
+  await redisClient.connect(CONFIG.REDIS_HOST, CONFIG.REDIS_PORT)
 });
 
 beforeEach(async () => {
@@ -36,6 +38,8 @@ beforeEach(async () => {
 afterAll(async () => {
   await mongo.stop();
   await mongoose.connection.close();
+  redisClient.client.quit();
+
 });
 
 global.signIn = async () => {
@@ -53,9 +57,7 @@ global.signIn = async () => {
   const response = await request(app)
     .post('/api/auth/sign-in')
     .send({ username, password })
-    .expect(200)
+    .expect(200);
   const cookie = response.get('Set-Cookie');
-  console.log(response.body);
-
-  return 'cookie';
+  return cookie;
 };

@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll --no-cache",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --collectCoverage",
     "build": "tsc --project ./",
     "start": "node build/index.js",
-    "dev": "ts-node-dev --rs --clear src/index.ts",
+    "dev": "ts-node-dev --rs --clear index.ts",
     "prod": "npm run build && node build/index.js"
   },
   "keywords": [],
