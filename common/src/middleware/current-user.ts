@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtHelper, RedisHelper } from '../helpers';
-import { ICurrentUser } from '../interfaces/current-user';
+import { CurrentUser } from '..';
 
 export const currentUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,7 +15,7 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
     const decoded = JwtHelper.verifyToken(
       accessToken,
       process.env.ACCESS_TOKEN_SECRET!
-    ) as ICurrentUser;
+    ) as CurrentUser;
     if (!req.redisClient) {
       throw new Error('Cannot access redis client before connecting');
     }

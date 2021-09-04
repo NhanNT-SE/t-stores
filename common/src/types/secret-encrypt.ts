@@ -1,4 +1,4 @@
-export interface ISecretEncrypt {
+export interface SecretEncrypt {
   iv: string;
   content: string;
 }
