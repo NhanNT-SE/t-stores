@@ -17,7 +17,7 @@ build:
       sync:
         manual:
           - dest: .
-            src: "src/**/*.ts"
+            src: "**/*.ts"
     # - image: nhannt1905/tickets
     #   context: "./services/tickets"
     #   docker:

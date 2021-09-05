@@ -8,22 +8,20 @@ import {
   PasswordHelper,
   RoleAccount,
   UnauthorizedError,
-  RedisHelper
-} from "@tstores/common";
-import { CONFIG } from "../config";
-import { getAccessToken, getRefreshToken } from "../helper/token-helper";
-import { User } from "../models/user";
-import { redisClient } from "../redis-client";
-
+  RedisHelper,
+} from '@tstores/common';
+import { CONFIG } from '../config';
+import { UserCreatedPublisher } from '../events/publishers/user-created.pub';
+import { getAccessToken, getRefreshToken } from '../helper/token-helper';
+import { User } from '../models/user';
+import { natsClient } from '../nats-client';
+import { redisClient } from '../redis-client';
 
 const refreshToken = async (refreshToken: string) => {
   if (!refreshToken) {
     throw new UnauthorizedError();
   }
-  const decoded = JwtHelper.verifyToken(
-    refreshToken,
-    CONFIG.REFRESH_TOKEN_SECRET!
-  ) as CurrentUser;
+  const decoded = JwtHelper.verifyToken(refreshToken, CONFIG.REFRESH_TOKEN_SECRET!) as CurrentUser;
   const user = await User.findById(decoded.id);
   if (!user) {
     throw new UnauthorizedError();
@@ -32,24 +30,25 @@ const refreshToken = async (refreshToken: string) => {
     throw new UnauthorizedError();
   }
   const accessToken = getAccessToken(user);
-  await new RedisHelper(redisClient.client).setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
+  await new RedisHelper(redisClient.client).setAsync(
+    user.id,
+    accessToken,
+    CONFIG.REDIS_TOKEN_LIFE * 2
+  );
   const response: IResponse = {
     data: { isSuccess: true },
-    message: "Token refresh successfully",
+    message: 'Token refresh successfully',
   };
   return { response, accessToken };
 };
 const signIn = async (username: string, password: string) => {
   const user = await User.findOne({ username });
   if (!user) {
-    throw new CustomError("Invalid username or password");
+    throw new CustomError('Invalid username or password');
   }
-  const isValidPass = await PasswordHelper.comparePassword(
-    password,
-    user.password
-  );
+  const isValidPass = await PasswordHelper.comparePassword(password, user.password);
   if (!isValidPass) {
-    throw new CustomError("Invalid username or password");
+    throw new CustomError('Invalid username or password');
   }
   const accessToken = getAccessToken(user);
   const refreshToken = getRefreshToken(user);
@@ -61,9 +60,16 @@ const signIn = async (username: string, password: string) => {
       CONFIG.REDIS_TOKEN_LIFE * 2
     );
   }
+  new UserCreatedPublisher(natsClient.client).publish({
+    id: user.id,
+    email: user.email,
+    username: user.username,
+    role: RoleAccount.User,
+    isMFA: false,
+  });
   const response: IResponse = {
     data: { isSuccess: !user.isMFA, requiredMFA: user.isMFA },
-    message: !user.isMFA ? "Sign in successfully" : "Required MFA",
+    message: !user.isMFA ? 'Sign in successfully' : 'Required MFA',
   };
 
   return { response, accessToken, refreshToken, requiredMFA };
@@ -75,7 +81,7 @@ const signOut = async (currentUser: CurrentUser) => {
   await new RedisHelper(redisClient.client).delAsync(currentUser.id);
   const response: IResponse = {
     data: { isSuccess: true },
-    message: "Sign out successfully",
+    message: 'Sign out successfully',
   };
   return { response };
 };
@@ -98,21 +104,21 @@ const verifyOTP = async (username: string, otp: string) => {
   if (!user) {
     throw new UnauthorizedError();
   }
-  const secretMFA = OTPHelper.decryptSecretOTP(
-    user.secretMFA,
-    CONFIG.OTP_SECRET
-  );
+  const secretMFA = OTPHelper.decryptSecretOTP(user.secretMFA, CONFIG.OTP_SECRET);
   const isValidOTP = OTPHelper.verifyOTPToken(otp, secretMFA);
   if (!isValidOTP) {
     throw new InvalidOTPError();
   }
   const accessToken = getAccessToken(user);
   const refreshToken = getRefreshToken(user);
-  await new RedisHelper(redisClient.client).setAsync(user.id, accessToken, CONFIG.REDIS_TOKEN_LIFE * 2);
+  await new RedisHelper(redisClient.client).setAsync(
+    user.id,
+    accessToken,
+    CONFIG.REDIS_TOKEN_LIFE * 2
+  );
   const response: IResponse = {
     data: { isSuccess: true },
-    message: "Sign in successfully",
-    
+    message: 'Sign in successfully',
   };
   return { accessToken, refreshToken, response };
 };

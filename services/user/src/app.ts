@@ -4,8 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import { redisClient } from './redis-client';
-import { AuthRouter } from './routes/auth-router';
-import { MFARouter } from './routes/mfa-router';
+
 
 const app = express();
 app.use(
@@ -27,10 +26,6 @@ app.use((req, res, next) => {
   }
 });
 app.use(currentUser);
-// app.use("/api/auth/refresh-token", cookieParser());
-app.use('/api/auth', AuthRouter);
-app.use('/api/auth/mfa', MFARouter);
-
 app.use((req, res, next) => {
   next(new NotFoundError());
 });
