@@ -31,6 +31,7 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
     }
     console.log("current user", decoded)
     req.currentUser = decoded;
+    return next();
   } catch (error) {
     next(error);
   }
