@@ -11,34 +11,20 @@
 //   }
 // };
 // export { requireAuth };
-const middlewareTest = (scope: string) => {
-  return async function runAuthenticationMiddleware(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    if (scope === 'public') {
-      next();
-    } else {
-      next( new UnauthorizedError());
-    }
-  };
-};
 import { NextFunction, Request, Response } from 'express';
 import { UnauthorizedError } from '../errors';
 import { JwtHelper, RedisHelper } from '../helpers';
-import { CurrentUser } from '..';
-export const requireAuth = (scope?: string) => {
+import { AuthScope, CurrentUser, UserPermission } from '..';
+export const requireAuth = (scopes?: string[]) => {
   return async function runAuthenticationMiddleware(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
-    console.log("scope", scope)
-    if (scope === 'public') {
-      next();
-    } else {
-      try {
+    const { scope, userPermission } = getAuthScopesRequest(scopes);
+    console.log("Check scope and permission",{scope, userPermission});
+    try {
+      if (scope === AuthScope.Private) {
         if (!process.env.COOKIE_ACCESS_TOKEN) {
           throw new UnauthorizedError();
         }
@@ -58,10 +44,29 @@ export const requireAuth = (scope?: string) => {
           return next();
         }
         req.currentUser = decoded;
-        return next();
-      } catch (error) {
-        next(error);
       }
+      return next();
+    } catch (error) {
+      next(error);
     }
+  };
+};
+
+const getAuthScopesRequest = (scopes?: string[]) => {
+  let scope = AuthScope.Private;
+  let userPermission = UserPermission.User;
+  if (scopes) {
+    scopes.forEach((e) => {
+      if (e.includes('scope')) {
+        scope = e as AuthScope;
+      }
+      if (e.includes('permission')) {
+        userPermission = e as UserPermission;
+      }
+    });
+  }
+  return {
+    scope,
+    userPermission,
   };
 };
