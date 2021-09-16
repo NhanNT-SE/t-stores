@@ -84,6 +84,9 @@ const getAuthScopesRequest = (scopes?: string[]) => {
       }
     });
   }
+  if(userPermission !== UserPermission.User){
+    scope = AuthScope.Private;
+  }
   return {
     scope,
     userPermission,
