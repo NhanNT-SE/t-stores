@@ -11,12 +11,24 @@
 //   }
 // };
 // export { requireAuth };
-
+const middlewareTest = (scope: string) => {
+  return async function runAuthenticationMiddleware(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    if (scope === 'public') {
+      next();
+    } else {
+      next( new UnauthorizedError());
+    }
+  };
+};
 import { NextFunction, Request, Response } from 'express';
 import { UnauthorizedError } from '../errors';
 import { JwtHelper, RedisHelper } from '../helpers';
 import { CurrentUser } from '..';
-export const requireAuth = async (scope?: string) => {
+export const requireAuth = (scope?: string) => {
   return async function runAuthenticationMiddleware(
     req: Request,
     res: Response,
