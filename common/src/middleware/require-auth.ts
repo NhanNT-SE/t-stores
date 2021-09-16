@@ -1,20 +1,7 @@
-// import { NextFunction, Request, Response } from "express";
-// import { UnauthorizedError } from "../errors";
-// const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     if (!req.currentUser) {
-//       throw new UnauthorizedError();
-//     }
-//     next();
-//   } catch (error) {
-//     next(error)
-//   }
-// };
-// export { requireAuth };
 import { NextFunction, Request, Response } from 'express';
-import { UnauthorizedError } from '../errors';
+import { UnauthorizedError, ForbiddenError } from '../errors';
 import { JwtHelper, RedisHelper } from '../helpers';
-import { AuthScope, CurrentUser, UserPermission } from '..';
+import { AuthScope, CurrentUser, RoleAccount, UserPermission } from '..';
 export const requireAuth = (scopes?: string[]) => {
   return async function runAuthenticationMiddleware(
     req: Request,
@@ -22,7 +9,6 @@ export const requireAuth = (scopes?: string[]) => {
     next: NextFunction
   ) {
     const { scope, userPermission } = getAuthScopesRequest(scopes);
-    console.log('Check scope and permission', { scope, userPermission });
     try {
       if (!process.env.COOKIE_ACCESS_TOKEN) {
         throw new UnauthorizedError();
@@ -42,7 +28,19 @@ export const requireAuth = (scopes?: string[]) => {
       if (!tokenRedis || tokenRedis !== accessToken) {
         return next();
       }
-      req.currentUser = decoded;
+      /* Check user permission here before return current user or throw error if user doesn't have access privileges */
+      const permission = userPermission.split(':')[1] as RoleAccount;
+
+      if (decoded.role !== permission) {
+        if (permission === RoleAccount.User) {
+          req.currentUser = decoded;
+        }
+        if (permission === RoleAccount.Admin) {
+          throw new ForbiddenError();
+        }
+      } else {
+        req.currentUser = decoded;
+      }
       return next();
     } catch (error) {
       if (scope === AuthScope.Private) {
@@ -51,6 +49,16 @@ export const requireAuth = (scopes?: string[]) => {
       next();
     }
   };
+};
+
+const checkPermission = (permissionRequest: RoleAccount, permissionUser: RoleAccount) => {
+  if (
+    permissionUser === RoleAccount.SupperAdmin ||
+    permissionRequest === permissionUser ||
+    permissionRequest === RoleAccount.User
+  ) {
+    return true;
+  }
 };
 
 const getAuthScopesRequest = (scopes?: string[]) => {

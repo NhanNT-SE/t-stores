@@ -3,9 +3,9 @@ export enum Subjects {
 }
 
 export enum RoleAccount {
-  SupperAdmin = 'supper-admin',
-  Admin = 'admin',
-  User = 'user',
+  SupperAdmin = 'supper-admin' as any,
+  Admin = 'admin' as any,
+  User = 'user' as any,
 }
 
 export enum AuthScope {
