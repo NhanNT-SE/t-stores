@@ -23,6 +23,7 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
     if (!tokenRedis || tokenRedis !== accessToken) {
       return next();
     }
+    console.log("current user", decoded)
     req.currentUser = decoded;
   } catch (error) {
     next(error);
