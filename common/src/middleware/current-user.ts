@@ -6,14 +6,18 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
   console.log("current user start")
 
   try {
+    console.log("current user check enviroment", process.env.COOKIE_ACCESS_TOKEN)
     if (!process.env.COOKIE_ACCESS_TOKEN) {
       return next();
     }
     const accessToken = req.cookies[process.env.COOKIE_ACCESS_TOKEN];
+    console.log("current user check accesstoken", accessToken)
 
     if (!accessToken) {
       return next();
     }
+    console.log("start decoded")
+
     const decoded = JwtHelper.verifyToken(
       accessToken,
       process.env.ACCESS_TOKEN_SECRET!
