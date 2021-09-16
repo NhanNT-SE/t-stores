@@ -22,6 +22,7 @@ export const requireAuth = async (scope?: string) => {
     res: Response,
     next: NextFunction
   ) {
+    console.log("scope", scope)
     if (scope === 'public') {
       next();
     } else {
