@@ -22,32 +22,33 @@ export const requireAuth = (scopes?: string[]) => {
     next: NextFunction
   ) {
     const { scope, userPermission } = getAuthScopesRequest(scopes);
-    console.log("Check scope and permission",{scope, userPermission});
+    console.log('Check scope and permission', { scope, userPermission });
     try {
-      if (scope === AuthScope.Private) {
-        if (!process.env.COOKIE_ACCESS_TOKEN) {
-          throw new UnauthorizedError();
-        }
-        const accessToken = req.cookies[process.env.COOKIE_ACCESS_TOKEN];
-        if (!accessToken) {
-          throw new UnauthorizedError();
-        }
-        const decoded = JwtHelper.verifyToken(
-          accessToken,
-          process.env.ACCESS_TOKEN_SECRET!
-        ) as CurrentUser;
-        if (!req.redisClient) {
-          throw new Error('Cannot access redis client before connecting');
-        }
-        const tokenRedis = await new RedisHelper(req.redisClient).getAsync(decoded.id);
-        if (!tokenRedis || tokenRedis !== accessToken) {
-          return next();
-        }
-        req.currentUser = decoded;
+      if (!process.env.COOKIE_ACCESS_TOKEN) {
+        throw new UnauthorizedError();
       }
+      const accessToken = req.cookies[process.env.COOKIE_ACCESS_TOKEN];
+      if (!accessToken) {
+        throw new UnauthorizedError();
+      }
+      const decoded = JwtHelper.verifyToken(
+        accessToken,
+        process.env.ACCESS_TOKEN_SECRET!
+      ) as CurrentUser;
+      if (!req.redisClient) {
+        throw new Error('Cannot access redis client before connecting');
+      }
+      const tokenRedis = await new RedisHelper(req.redisClient).getAsync(decoded.id);
+      if (!tokenRedis || tokenRedis !== accessToken) {
+        return next();
+      }
+      req.currentUser = decoded;
       return next();
     } catch (error) {
-      next(error);
+      if (scope === AuthScope.Private) {
+        return next(error);
+      }
+      next();
     }
   };
 };
