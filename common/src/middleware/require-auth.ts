@@ -7,6 +7,7 @@ const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
     }
     next();
   } catch (error) {
+    console.log("error in require auth", error)
     next(error)
   }
 };
