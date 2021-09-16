@@ -23,10 +23,8 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
       return next();
     }
     req.currentUser = decoded;
-    next();
+    return next()
   } catch (error) {
-    console.log("error in current user", error)
-    // next();
     next(error);
   }
 };
