@@ -24,7 +24,6 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
       return next();
     }
     req.currentUser = decoded;
-    return next();
   } catch (error) {
     next(error);
   }
