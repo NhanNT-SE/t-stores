@@ -45,7 +45,7 @@ export const requireAuth = (scopes?: string[]) => {
   };
 };
 
-const getPermission = (permissionRequest: RoleAccount, permissionUser: RoleAccount) => {
+const getPermission = (permissionRequest: RoleAccount, permissionUser: RoleAccount): boolean => {
   const getKeyPermissionRequest = getEnumKeyByEnumValue(
     RoleAccount,
     permissionRequest
