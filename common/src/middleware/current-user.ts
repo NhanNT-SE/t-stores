@@ -25,6 +25,7 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
     req.currentUser = decoded;
     next();
   } catch (error) {
+    console.log("error in current user", error)
     next();
     // next(error);
   }
