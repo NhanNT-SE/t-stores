@@ -3,6 +3,8 @@ import { JwtHelper, RedisHelper } from '../helpers';
 import { CurrentUser } from '..';
 
 export const currentUser = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("current user start")
+
   try {
     if (!process.env.COOKIE_ACCESS_TOKEN) {
       return next();
