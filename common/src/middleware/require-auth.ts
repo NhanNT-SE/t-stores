@@ -31,11 +31,9 @@ export const requireAuth = (scopes?: string[]) => {
       /* Check user permission here before return current user or throw error if user doesn't have access privileges */
       const permission = userPermission.split(':')[1] as RoleAccount;
       const checkPermission = getPermission(permission, decoded.role as RoleAccount);
-      console.log("check permission", {
-        permissionReq: permission,
-        permissionUser: decoded.role,
-        checkPermission
-      })
+      if (!checkPermission) {
+        throw new ForbiddenError();
+      }
       req.currentUser = decoded;
       return next();
     } catch (error) {
