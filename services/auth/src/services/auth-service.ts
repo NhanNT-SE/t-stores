@@ -2,7 +2,7 @@ import {
   CustomError,
   CurrentUser,
   InvalidOTPError,
-  IResponse,
+  ResponseDto,
   JwtHelper,
   OTPHelper,
   PasswordHelper,
@@ -14,7 +14,7 @@ import { CONFIG } from '../config';
 import { UserCreatedPublisher } from '../events/publishers/user-created.pub';
 import { getAccessToken, getRefreshToken } from '../helper/token-helper';
 import { User } from '../models/user';
-import { natsClient } from '../nats-client';
+// import { natsClient } from '../nats-client';
 import { redisClient } from '../redis-client';
 
 const refreshToken = async (refreshToken: string) => {
@@ -35,7 +35,7 @@ const refreshToken = async (refreshToken: string) => {
     accessToken,
     CONFIG.REDIS_TOKEN_LIFE * 2
   );
-  const response: IResponse = {
+  const response: ResponseDto = {
     data: { isSuccess: true },
     message: 'Token refresh successfully',
   };
@@ -60,14 +60,14 @@ const signIn = async (username: string, password: string) => {
       CONFIG.REDIS_TOKEN_LIFE * 2
     );
   }
-  new UserCreatedPublisher(natsClient.client).publish({
-    id: user.id,
-    email: user.email,
-    username: user.username,
-    role: RoleAccount.User,
-    isMFA: false,
-  });
-  const response: IResponse = {
+  // new UserCreatedPublisher(natsClient.client).publish({
+  //   id: user.id,
+  //   email: user.email,
+  //   username: user.username,
+  //   role: RoleAccount.User,
+  //   isMFA: false,
+  // });
+  const response: ResponseDto = {
     data: { isSuccess: !user.isMFA, requiredMFA: user.isMFA },
     message: !user.isMFA ? 'Sign in successfully' : 'Required MFA',
   };
@@ -79,7 +79,7 @@ const signOut = async (currentUser: CurrentUser) => {
     $inc: { tokenVersion: 1 },
   });
   await new RedisHelper(redisClient.client).delAsync(currentUser.id);
-  const response: IResponse = {
+  const response: ResponseDto = {
     data: { isSuccess: true },
     message: 'Sign out successfully',
   };
@@ -95,7 +95,7 @@ const signUp = async (username: string, email: string, password: string) => {
     secretMFA,
     tokenVersion: 0,
   }).save();
-  const response: IResponse = { data: user };
+  const response: ResponseDto = { data: user };
   return { response };
 };
 
@@ -116,7 +116,7 @@ const verifyOTP = async (username: string, otp: string) => {
     accessToken,
     CONFIG.REDIS_TOKEN_LIFE * 2
   );
-  const response: IResponse = {
+  const response: ResponseDto = {
     data: { isSuccess: true },
     message: 'Sign in successfully',
   };

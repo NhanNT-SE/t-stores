@@ -10,13 +10,13 @@ const PORT = CONFIG.PORT;
 (async function () {
   const stringConnect = CONFIG.MONGO_URI;
   try {
-    await natsClient.connect(CONFIG.NATS_CLUSTER_ID, CONFIG.NATS_CLIENT_ID, CONFIG.NATS_URL);
-    natsClient.client.on('close', () => {
-      console.log('NATS connection closed!');
-      process.exit();
-    });
-    process.on('SIGINT', () => natsClient.client.close());
-    process.on('SIGTERM', () => natsClient.client.close());
+    // await natsClient.connect(CONFIG.NATS_CLUSTER_ID, CONFIG.NATS_CLIENT_ID, CONFIG.NATS_URL);
+    // natsClient.client.on('close', () => {
+    //   console.log('NATS connection closed!');
+    //   process.exit();
+    // });
+    // process.on('SIGINT', () => natsClient.client.close());
+    // process.on('SIGTERM', () => natsClient.client.close());
 
     await redisClient.connect(CONFIG.REDIS_HOST!, CONFIG.REDIS_PORT!);
     await connect(stringConnect, {

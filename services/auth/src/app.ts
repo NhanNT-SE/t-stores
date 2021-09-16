@@ -26,8 +26,8 @@ app.use((req, res, next) => {
     next(error);
   }
 });
-app.use(currentUser);
 // app.use("/api/auth/refresh-token", cookieParser());
+// app.use(currentUser);
 app.use('/api/auth', AuthRouter);
 app.use('/api/auth/mfa', MFARouter);
 

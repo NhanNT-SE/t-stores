@@ -2,7 +2,7 @@ import {
   CustomError,
   CurrentUser,
   InvalidOTPError,
-  IResponse,
+  ResponseDto,
   OTPHelper,
   PasswordHelper,
   UnauthorizedError,
@@ -32,7 +32,7 @@ const getQRCode = async (currentUser: CurrentUser, password: string) => {
     CONFIG.SERVER_NAME,
     secretMFA
   );
-  const response: IResponse = { data: { qrCode } };
+  const response: ResponseDto = { data: { qrCode } };
   return { response };
 };
 const verifyOTP = async (currentUser: CurrentUser, otp: string) => {
@@ -49,7 +49,7 @@ const verifyOTP = async (currentUser: CurrentUser, otp: string) => {
     throw new InvalidOTPError();
   }
 
-  const response: IResponse = {
+  const response: ResponseDto = {
     data: { isSuccess: true },
     message: "Token valid",
   };
@@ -75,7 +75,7 @@ const enableMFA = async (currentUser: CurrentUser, otp: string) => {
   }
 
   await user.updateOne({ isMFA: true });
-  const response: IResponse = {
+  const response: ResponseDto = {
     data: { isSuccess: true },
     message: "MFA is enabled for your account ",
   };
@@ -98,7 +98,7 @@ const disableMFA = async (currentUser: CurrentUser, password: string) => {
   }
   const secretMFA = OTPHelper.encryptSecretOTP(CONFIG.OTP_SECRET);
   await user.updateOne({ isMFA: false, secretMFA });
-  const response: IResponse = {
+  const response: ResponseDto = {
     data: { isSuccess: true },
     message: "MFA is disabled for your account ",
   };

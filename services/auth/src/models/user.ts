@@ -1,7 +1,7 @@
 import { SecretEncrypt, PasswordHelper, RoleAccount } from "@tstores/common";
 import { Document, Model, model, Schema } from "mongoose";
 
-interface IUser {
+interface User {
   email: string;
   username: string;
   password: string;
@@ -10,7 +10,7 @@ interface IUser {
   secretMFA: SecretEncrypt;
   tokenVersion: number;
 }
-interface IUserDoc extends Document {
+interface UserDoc extends Document {
   email: string;
   username: string;
   password: string;
@@ -19,8 +19,8 @@ interface IUserDoc extends Document {
   secretMFA: SecretEncrypt;
   tokenVersion: number;
 }
-interface IUserModel extends Model<IUserDoc> {
-  build(user: IUser): IUserDoc;
+interface UserModel extends Model<UserDoc> {
+  build(user: User): UserDoc;
 }
 const schema = new Schema(
   {
@@ -87,8 +87,8 @@ schema.pre("save", async function (done) {
   }
   done();
 });
-schema.statics.build = (user: IUser) => {
+schema.statics.build = (user: User) => {
   return new User(user);
 };
-const User = model<IUserDoc, IUserModel>("User", schema);
+const User = model<UserDoc, UserModel>("User", schema);
 export { User };

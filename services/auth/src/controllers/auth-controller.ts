@@ -26,6 +26,7 @@ const refreshToken = async (
   }
 };
 const signIn = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("vao sign in")
   try {
     const { username, password } = req.body;
     const { response, requiredMFA, accessToken, refreshToken } =
