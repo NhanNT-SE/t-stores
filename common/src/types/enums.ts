@@ -2,10 +2,11 @@ export enum Subjects {
   UserCreated = 'user:created',
 }
 
+/* Please declared in ascending order by role */
 export enum RoleAccount {
-  SupperAdmin = 'supper-admin' as any,
-  Admin = 'admin' as any,
-  User = 'user' as any,
+  User = 'user',
+  Admin = 'admin',
+  SupperAdmin = 'supper-admin',
 }
 
 export enum AuthScope {

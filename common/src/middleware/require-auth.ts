@@ -30,17 +30,9 @@ export const requireAuth = (scopes?: string[]) => {
       }
       /* Check user permission here before return current user or throw error if user doesn't have access privileges */
       const permission = userPermission.split(':')[1] as RoleAccount;
-
-      if (decoded.role !== permission) {
-        if (permission === RoleAccount.User) {
-          req.currentUser = decoded;
-        }
-        if (permission === RoleAccount.Admin) {
-          throw new ForbiddenError();
-        }
-      } else {
-        req.currentUser = decoded;
-      }
+      const checkPermission = getPermission(permission, decoded.role as RoleAccount);
+      console.log("check permission", checkPermission)
+      req.currentUser = decoded;
       return next();
     } catch (error) {
       if (scope === AuthScope.Private) {
@@ -51,16 +43,32 @@ export const requireAuth = (scopes?: string[]) => {
   };
 };
 
-const checkPermission = (permissionRequest: RoleAccount, permissionUser: RoleAccount) => {
-  if (
-    permissionUser === RoleAccount.SupperAdmin ||
-    permissionRequest === permissionUser ||
-    permissionRequest === RoleAccount.User
-  ) {
+const getPermission = (permissionRequest: RoleAccount, permissionUser: RoleAccount) => {
+  const getKeyPermissionRequest = getEnumKeyByEnumValue(
+    RoleAccount,
+    permissionRequest
+  ) as RoleAccount;
+  const getKeyPermissionUser = getEnumKeyByEnumValue(RoleAccount, permissionUser) as RoleAccount;
+  const indexPermissionRequest: number = Object.keys(RoleAccount).indexOf(getKeyPermissionRequest);
+  const indexPermissionUser: number = Object.keys(RoleAccount).indexOf(getKeyPermissionUser);
+
+  if (indexPermissionUser < 0 || indexPermissionRequest < 0) {
+    return false;
+  }
+
+  if (indexPermissionUser >= indexPermissionRequest) {
     return true;
   }
+  return false;
 };
 
+const getEnumKeyByEnumValue = <T extends { [index: string]: string }>(
+  myEnum: T,
+  enumValue: string
+): keyof T | null => {
+  let keys = Object.keys(myEnum).filter((x) => myEnum[x] == enumValue);
+  return keys.length > 0 ? keys[0] : null;
+};
 const getAuthScopesRequest = (scopes?: string[]) => {
   let scope = AuthScope.Private;
   let userPermission = UserPermission.User;
