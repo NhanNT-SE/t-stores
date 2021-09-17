@@ -20,7 +20,7 @@ export const requireAuth = (scopes?: string[]) => {
       const decoded = JwtHelper.verifyToken(
         accessToken,
         process.env.ACCESS_TOKEN_SECRET!
-      ) as CurrentUser;
+      ) as any;
       if (!req.redisClient) {
         throw new Error('Cannot access redis client before connecting');
       }
@@ -34,7 +34,12 @@ export const requireAuth = (scopes?: string[]) => {
       if (!checkPermission) {
         throw new ForbiddenError();
       }
-      req.currentUser = decoded;
+      
+      req.currentUser = {
+        id : decoded.id,
+        role:decoded.role,
+        tokenVersion: decoded.tokenVersion
+      };
       return next();
     } catch (error: any) {
       if (scope === AuthScope.Private) {
