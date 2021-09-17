@@ -545,9 +545,9 @@
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
 "@tstores/common@^1.0.9":
-  version "1.0.83"
-  resolved "https://registry.yarnpkg.com/@tstores/common/-/common-1.0.83.tgz#be7477d0a3781190eae42689dff2f3f8026b4e31"
-  integrity sha512-VeWNzNrWToe+NhebHAg7cy9Oh2990UjofVzVNSPuIw8dL56v3HXIbJhxFCGuEr9hkzss7AxTeItAKEw62PZn2g==
+  version "1.0.89"
+  resolved "https://registry.yarnpkg.com/@tstores/common/-/common-1.0.89.tgz#9d22b3429ed3cdb23753befecd43fcb0023c9384"
+  integrity sha512-GtianJHJ+RbkXZobsSe//ZSSh8tPVppzGg3sPSfIrSiX3mBDHQHZLD+JDsVFcX1PhX7ofbVxo4qYNW6OSSgVuw==
   dependencies:
     "@types/bcryptjs" "^2.4.2"
     "@types/express" "^4.17.13"
@@ -719,9 +719,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "16.9.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.9.1.tgz#0611b37db4246c937feef529ddcc018cf8e35708"
-  integrity sha512-QpLcX9ZSsq3YYUUnD3nFDY8H7wctAhQj/TFKL8Ya8v5fMm3CFXxo8zStsLAl780ltoYoo1WvKUVGBQK+1ifr7g==
+  version "16.9.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.9.2.tgz#81f5a039d6ed1941f8cc57506c74e7c2b8fc64b9"
+  integrity sha512-ZHty/hKoOLZvSz6BtP1g7tc7nUeJhoCf3flLjh8ZEv1vFKBWHXcnMbJMyN/pftSljNyy0kNW/UqI3DccnBnZ8w==
 
 "@types/node@^15.14.1":
   version "15.14.9"

@@ -7,7 +7,7 @@ router.post(
   "/qr-code",
   [body("password").trim().notEmpty().withMessage("Password can not be empty")],
   validateRequest,
-  requireAuth,
+  requireAuth(),
   controller.getQRCode
 );
 router.post(
@@ -20,7 +20,7 @@ router.post(
       .withMessage("must be at 6 chars long"),
   ],
   validateRequest,
-  requireAuth,
+  requireAuth(),
   controller.verifyOTP
 );
 router.patch(
@@ -33,14 +33,14 @@ router.patch(
       .withMessage("must be at 6 chars long"),
   ],
   validateRequest,
-  requireAuth,
+  requireAuth(),
   controller.enableMFA
 );
 router.patch(
   "/disable",
   [body("password").trim().notEmpty().withMessage("Password can not be empty")],
   validateRequest,
-  requireAuth,
+  requireAuth(),
   controller.disableMFA
 );
 

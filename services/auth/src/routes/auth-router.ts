@@ -1,13 +1,5 @@
-import {
-  AuthScope,
-  currentUser,
-  requireAuth,
-  RoleAccount,
-  UnauthorizedError,
-  UserPermission,
-  validateRequest,
-} from '@tstores/common';
-import { Router, NextFunction, Request, Response } from 'express';
+import { AuthScope, requireAuth, validateRequest } from '@tstores/common';
+import { Request, Response, Router } from 'express';
 import { body } from 'express-validator';
 import * as controller from '../controllers/auth-controller';
 const router = Router();
@@ -30,7 +22,7 @@ router.post(
   validateRequest,
   controller.signUp
 );
-router.post('/sign-out', requireAuth, controller.signOut);
+router.post('/sign-out', requireAuth([AuthScope.Public]), controller.signOut);
 router.post('/refresh-token', controller.refreshToken);
 router.post(
   '/verify-otp',
@@ -42,8 +34,8 @@ router.post(
   controller.verifyOTP
 );
 
-router.get('/check-auth', requireAuth([AuthScope.Public]), (req: Request, res: Response) => {
-  res.json("check auth");
+router.get('/check-auth', requireAuth(), (req: Request, res: Response) => {
+  const currentUser = req.currentUser;
+  res.json({ currentUser });
 });
 export { router as AuthRouter };
-

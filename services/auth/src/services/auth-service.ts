@@ -75,10 +75,12 @@ const signIn = async (username: string, password: string) => {
   return { response, accessToken, refreshToken, requiredMFA };
 };
 const signOut = async (currentUser: CurrentUser) => {
-  await User.findByIdAndUpdate(currentUser.id, {
-    $inc: { tokenVersion: 1 },
-  });
-  await new RedisHelper(redisClient.client).delAsync(currentUser.id);
+  if (currentUser) {
+    await User.findByIdAndUpdate(currentUser.id, {
+      $inc: { tokenVersion: 1 },
+    });
+    await new RedisHelper(redisClient.client).delAsync(currentUser.id);
+  }
   const response: ResponseDto = {
     data: { isSuccess: true },
     message: 'Sign out successfully',
