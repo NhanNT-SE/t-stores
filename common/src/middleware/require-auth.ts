@@ -37,7 +37,6 @@ export const requireAuth = (scopes?: string[]) => {
       req.currentUser = decoded;
       return next();
     } catch (error: any) {
-      console.log(error);
       if (scope === AuthScope.Private) {
         if (error.message === 'jwt expired') {
           return next(new ExpireTokenError());
