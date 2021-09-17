@@ -14,19 +14,21 @@ const generateToken = (user: CurrentUser, secretSignature: string, tokenLife: st
 };
 
 const verifyToken = (token: string, secretKey: string) => {
-  try {
-    const verify = jwt.verify(token, secretKey);
-    return verify;
-  } catch (error: any) {
-    if (error.message === 'jwt expired') {
-      const overdueDays = getOverdueDays(error.expiredAt);
-      if (overdueDays > 24) {
-        throw new UnauthorizedError();
-      }
-      throw new ExpireTokenError(overdueDays + '');
-    }
-    throw new UnauthorizedError();
-  }
+  const verify = jwt.verify(token, secretKey);
+  return verify;
+  // try {
+  //   const verify = jwt.verify(token, secretKey);
+  //   return verify;
+  // } catch (error: any) {
+  //   if (error.message === 'jwt expired') {
+  //     const overdueDays = getOverdueDays(error.expiredAt);
+  //     if (overdueDays > 24) {
+  //       throw new UnauthorizedError();
+  //     }
+  //     throw new ExpireTokenError(overdueDays + '');
+  //   }
+  //   throw new UnauthorizedError();
+  // }
 };
 
 const getOverdueDays = (dateExpired: Date) => {

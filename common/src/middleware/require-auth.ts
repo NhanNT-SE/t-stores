@@ -37,6 +37,7 @@ export const requireAuth = (scopes?: string[]) => {
       req.currentUser = decoded;
       return next();
     } catch (error) {
+      console.log(error)
       if (scope === AuthScope.Private) {
         return next(error);
       }
