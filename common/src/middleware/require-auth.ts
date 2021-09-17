@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { UnauthorizedError, ForbiddenError } from '../errors';
+import { UnauthorizedError, ForbiddenError, ExpireTokenError } from '../errors';
 import { JwtHelper, RedisHelper } from '../helpers';
 import { AuthScope, CurrentUser, RoleAccount, UserPermission } from '..';
 export const requireAuth = (scopes?: string[]) => {
@@ -36,9 +36,12 @@ export const requireAuth = (scopes?: string[]) => {
       }
       req.currentUser = decoded;
       return next();
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      console.log(error);
       if (scope === AuthScope.Private) {
+        if (error.message === 'jwt expired') {
+          return next(new ExpireTokenError());
+        }
         return next(error);
       }
       next();
@@ -85,7 +88,7 @@ const getAuthScopesRequest = (scopes?: string[]) => {
       }
     });
   }
-  if(userPermission !== UserPermission.User){
+  if (userPermission !== UserPermission.User) {
     scope = AuthScope.Private;
   }
   return {
