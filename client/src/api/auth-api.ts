@@ -1,4 +1,4 @@
-import { LoginInput, ResponseModel, User } from 'models';
+import { LoginInput, ResponseModel } from 'models';
 import { axiosClient } from './axios-client';
 
 const authApi = {

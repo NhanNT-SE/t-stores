@@ -33,6 +33,7 @@ axiosClient.interceptors.response.use(
       const errorMsg = error.response?.data.errors[0].message;
       if (errorMsg === 'Jwt expired' && !originalRequest._retry) {
         /* REFRESH TOKEN */
+        console.log('refresh token')
         originalRequest._retry = true;
         await axiosClient.post('/auth/refresh-token');
         return axiosClient(originalRequest);

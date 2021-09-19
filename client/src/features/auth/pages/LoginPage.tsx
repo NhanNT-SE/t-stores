@@ -1,19 +1,23 @@
 import { Box, Button, Typography } from '@material-ui/core';
 import { Facebook, LinkedIn, Twitter } from '@material-ui/icons';
-import {authApi} from 'api/auth-api';
+import { authApi } from 'api/auth-api';
+import { useAppDispatch } from 'app/hooks';
 import { LoginInput } from 'models';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { authActions } from '../auth-slice';
 import LoginForm from './components/LoginForm';
 import { loginStyle } from './styles/login-style';
 
 export default function LoginPage() {
   const classes = loginStyle();
+  const dispatch = useAppDispatch();
 
-  const checkAuth = async () => {
-    const response = await authApi.checkAuth();
-    console.log('Check auth api', response);
-  };
+  // const checkAuth = async () => {
+  //   // const response = await authApi.checkAuth();
+  //   // console.log('Check auth api', response);
+  //   dispatch(authActions.checkAuth());
+  // };
 
   const onFormSubmit = async (formValue: LoginInput) => {
     try {
@@ -29,7 +33,6 @@ export default function LoginPage() {
     <Box className={classes.root}>
       <Box borderRadius={8} boxShadow={2} className={classes.fromContainer}>
         <Box className={classes.form}>
-          <Button onClick={checkAuth}>Check auth</Button>
           <Typography variant="h3">Login</Typography>
           <LoginForm onSubmit={onFormSubmit} />
         </Box>
