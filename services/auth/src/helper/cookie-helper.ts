@@ -6,7 +6,8 @@ const sendAccessToken = (res: Response, accessToken: string) => {
     httpOnly: true,
     secure: process.env.NODE_ENV !== 'local',
     sameSite: 'strict',
-    maxAge: 1000 * 60 * 60 * 24 * 2, // 2 days = life access token(1day) + max time accept for refresh token(1day)
+    // maxAge: 1000 * 60 * 60 * 24 * 2, // 2 days = life access token(1day) + max time accept for refresh token(1day)
+    maxAge: 1000 * 40, // 40s
   });
 };
 const sendRefreshToken = (res: Response, refreshToken: string) => {
