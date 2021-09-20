@@ -1,33 +1,32 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, InputAdornment, makeStyles } from "@material-ui/core";
-import { AccountBox, Email, Lock, LockOpen } from "@material-ui/icons";
-import { InputField } from "components/form-fields";
-import { RegisterInput } from "models";
-import React from "react";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, InputAdornment } from '@mui/material';
+import { AccountBox, Email, Lock, LockOpen } from '@mui/icons-material';
+import { InputField } from 'components/form-fields';
+import { RegisterInput } from 'models';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { Box, styled } from '@mui/system';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flex: 1,
-    flexDirection: "column",
-  },
-  form: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  },
-}));
+const Root = styled(Box)({
+  display: 'flex',
+  flex: 1,
+  flexDirection: 'column',
+});
+const FormContainer = styled('form')({
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+});
 export interface RegisterFormProps {
   onSubmit: (formValue: RegisterInput) => void;
 }
 const initialValue: RegisterInput = {
-  username: "",
-  password: "",
-  email: "",
-  passwordConfirm: "",
+  username: '',
+  password: '',
+  email: '',
+  passwordConfirm: '',
 };
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -37,16 +36,15 @@ const schema = yup.object().shape({
     .required()
     .matches(
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/,
-      "Password must contain at least 8 characters, one uppercase, one number and one special case character"
+      'Password must contain at least 8 characters, one uppercase, one number and one special case character'
     ),
   passwordConfirm: yup
     .string()
     .required()
-    .oneOf([yup.ref("password"), null], "Password not match"),
+    .oneOf([yup.ref('password'), null], 'Password not match'),
 });
 
 export default function RegisterForm({ onSubmit }: RegisterFormProps) {
-  const classes = useStyles();
   const {
     control,
     handleSubmit,
@@ -54,14 +52,14 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
   } = useForm<RegisterInput>({
     defaultValues: initialValue,
     resolver: yupResolver(schema),
-    mode: "onBlur",
+    mode: 'onBlur',
   });
   const handleFormSubmit = (formValue: RegisterInput) => {
     onSubmit(formValue);
   };
   return (
-    <Box mt={3} className={classes.root}>
-      <form onSubmit={handleSubmit(handleFormSubmit)} className={classes.form}>
+    <Root mt={3}>
+      <FormContainer onSubmit={handleSubmit(handleFormSubmit)}>
         <InputField
           name="email"
           control={control}
@@ -121,13 +119,13 @@ export default function RegisterForm({ onSubmit }: RegisterFormProps) {
           variant="contained"
           color="primary"
           size="large"
-          style={{ width: "fit-content" }}
+          style={{ width: 'fit-content' }}
           disabled={isSubmitting || !isValid}
         >
           {/* {isSubmitting && <CircularProgress size={16} color="primary" />} */}
           &nbsp; Register
         </Button>
-      </form>
-    </Box>
+      </FormContainer>
+    </Root>
   );
 }

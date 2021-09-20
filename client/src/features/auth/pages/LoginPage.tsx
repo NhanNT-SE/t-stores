@@ -1,5 +1,5 @@
-import { Box, Button, Typography } from '@material-ui/core';
-import { Facebook, LinkedIn, Twitter } from '@material-ui/icons';
+import { Facebook, LinkedIn, Twitter } from '@mui/icons-material';
+import { Typography, Box } from '@mui/material';
 import { authApi } from 'api/auth-api';
 import { useAppDispatch } from 'app/hooks';
 import { LoginInput } from 'models';
@@ -7,10 +7,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { authActions } from '../auth-slice';
 import LoginForm from './components/LoginForm';
-import { loginStyle } from './styles/login-style';
+import { Root, Container, ImageArea, RegisterArea, LoginArea, CustomLoginButton } from './styles/login-style';
 
 export default function LoginPage() {
-  const classes = loginStyle();
   const dispatch = useAppDispatch();
 
   // const checkAuth = async () => {
@@ -30,35 +29,35 @@ export default function LoginPage() {
     }
   };
   return (
-    <Box className={classes.root}>
-      <Box borderRadius={8} boxShadow={2} className={classes.fromContainer}>
-        <Box className={classes.form}>
+    <Root>
+      <Container borderRadius={8} boxShadow={2}>
+        <Box sx={{gridArea:'form'}}>
           <Typography variant="h3">Login</Typography>
           <LoginForm onSubmit={onFormSubmit} />
         </Box>
-        <Box className={classes.image}>
+        <ImageArea>
           <img src={process.env.PUBLIC_URL + '/images/bg_login.png'} alt="login" />
-        </Box>
-        <Box className={classes.register}>
+        </ImageArea>
+        <RegisterArea>
           <Link to="/register">
             <Typography>Create an account</Typography>
           </Link>
-        </Box>
-        <Box className={classes.login}>
+        </RegisterArea>
+        <LoginArea>
           <Typography>Or login with</Typography>
           <Box ml={2}>
-            <Button variant="contained" className={`${classes.button} facebook`}>
+            <CustomLoginButton variant="contained" className='facebook'>
               <Facebook fontSize="small" />
-            </Button>
-            <Button variant="contained" className={`${classes.button} twitter`}>
+            </CustomLoginButton>
+            <CustomLoginButton variant="contained" className='twitter'>
               <Twitter fontSize="small" />
-            </Button>
-            <Button variant="contained" className={`${classes.button} linkedIn`}>
+            </CustomLoginButton>
+            <CustomLoginButton variant="contained" className='linkedIn'>
               <LinkedIn fontSize="small" />
-            </Button>
+            </CustomLoginButton>
           </Box>
-        </Box>
-      </Box>
-    </Box>
+        </LoginArea>
+      </Container>
+    </Root>
   );
 }

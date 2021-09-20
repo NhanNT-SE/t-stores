@@ -1,7 +1,7 @@
 import {
   Checkbox,
   FormControlLabel
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { InputHTMLAttributes } from "react";
 import { Control, useController } from "react-hook-form";
 export interface CheckBoxFieldProps

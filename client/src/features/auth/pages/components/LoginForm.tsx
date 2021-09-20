@@ -4,8 +4,8 @@ import {
   Button,
   CircularProgress,
   InputAdornment,
-} from "@material-ui/core";
-import { AccountBox, Lock } from "@material-ui/icons";
+} from "@mui/material";
+import { AccountBox, Lock } from "@mui/icons-material";
 import { InputField } from "components/form-fields";
 import { CheckBoxField } from "components/form-fields/CheckBoxField";
 import { BASE_URL } from "config";
